@@ -1171,4 +1171,21 @@
     const cards = document.querySelectorAll('.project-card');
 
     filterBtns.forEach(btn => {
-      btn.addEventListen
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          if (filter === 'all') {
+            card.classList.remove('hidden');
+          } else {
+            const cats = card.dataset.categories || '';
+            card.classList.toggle('hidden', !cats.includes(filter));
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
