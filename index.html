@@ -847,6 +847,7 @@
         <button class="filter-btn" data-filter="game">Game Design</button>
         <button class="filter-btn" data-filter="web">Web Development</button>
         <button class="filter-btn" data-filter="math">Math & Education</button>
+        <button class="filter-btn" data-filter="data">Data & Analytics</button>
       </div>
 
       <div class="projects-grid">
@@ -1046,6 +1047,33 @@
             <span class="stack-item">Netlify</span>
           </div>
           <a href="https://kirashinnceramicsprep.netlify.app" class="project-link" target="_blank">View Live App</a>
+        </div>
+
+        <!-- Project: Steam Market Analysis -->
+        <div class="project-card fade-in-section" data-categories="data math">
+          <div class="project-tags">
+            <span class="project-tag">Data Analysis</span>
+            <span class="project-tag">Python</span>
+          </div>
+          <h3 class="project-title">Steam Farming & Life Sim Market Analysis</h3>
+          <p class="project-desc">
+            End-to-end data science project analyzing 3,680 Steam games across
+            Farming Sim, Life Sim, Agriculture, and Cozy tags. Covers API scraping,
+            data cleaning, exploratory analysis, and statistical testing — including
+            a one-sample t-test confirming Stardew Valley as a genre outlier
+            (t = −41.91, p &lt; 0.001). Delivered as a Jupyter notebook and
+            interactive Plotly dashboard.
+          </p>
+          <div class="project-stack">
+            <span class="stack-item">Python</span>
+            <span class="stack-item">Pandas</span>
+            <span class="stack-item">Matplotlib</span>
+            <span class="stack-item">Plotly</span>
+            <span class="stack-item">SteamSpy API</span>
+            <span class="stack-item">Jupyter</span>
+          </div>
+          <a href="https://steam-analysis-dashboard.netlify.app/" class="project-link" target="_blank">View Dashboard</a>
+          <a href="https://github.com/kiramichele/steam-analysis" class="project-link" target="_blank" style="margin-top: 0.5rem;">View on GitHub</a>
         </div>
 
         <!-- Project 10: ShinnEd -->
@@ -1331,9 +1359,9 @@
             or just want to talk shop — I'd love to hear from you.
           </p>
           <div class="contact-links">
-            <a href="mailto:kiramicheleshinn@gmail.com" class="contact-link">
+            <a href="/cdn-cgi/l/email-protection#1c77756e7d71757f747970796f747572725c7b717d7570327f7371" class="contact-link">
               <span class="contact-link-icon">✉️</span>
-              <span class="contact-link-text">kiramicheleshinn@gmail.com</span>
+              <span class="contact-link-text"><span class="__cf_email__" data-cfemail="d1bab8a3b0bcb8b2b9b4bdb4a2b9b8bfbf91b6bcb0b8bdffb2bebc">[email&#160;protected]</span></span>
             </a>
             <a href="https://www.linkedin.com/in/kiramicheleshinn" class="contact-link" target="_blank">
               <span class="contact-link-icon">💼</span>
@@ -1380,7 +1408,7 @@
   </footer>
 
   <!-- ── SCRIPTS ───────────────────────────────────────────── -->
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // ── Scroll fade-in
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1417,14 +1445,3 @@
         const filter = btn.dataset.filter;
         cards.forEach(card => {
           if (filter === 'all') {
-            card.classList.remove('hidden');
-          } else {
-            const cats = card.dataset.categories || '';
-            card.classList.toggle('hidden', !cats.includes(filter));
-          }
-        });
-      });
-    });
-  </script>
-</body>
-</html>
