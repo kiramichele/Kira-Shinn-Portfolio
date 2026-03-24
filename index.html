@@ -1457,7 +1457,7 @@
   </footer>
 
   <!-- ── SCRIPTS ───────────────────────────────────────────── -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     // ── Scroll fade-in
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1483,14 +1483,23 @@
     }, 100);
 
     // ── Portfolio filter
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const cards = document.querySelectorAll('.project-card');
+    document.addEventListener('DOMContentLoaded', function() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.project-card');
 
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const filter = btn.dataset.filter;
-        cards.forEach(card => {
-          if (filter === 'all') {
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      cards.forEach(card => {
+        if (filter === 'all') {
+          card.classList.remove('hidden');
+        } else {
+          const cats = card.dataset.categories || '';
+          card.classList.toggle('hidden', !cats.includes(filter));
+        }
+      });
+    });
+  });
+});
