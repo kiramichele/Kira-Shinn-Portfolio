@@ -519,10 +519,15 @@
       max-width: 600px;
     }
 
+    /* ── RESEARCH ────────────────────────────────────────── */
+    #research {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
     /* ── CONTACT ─────────────────────────────────────────── */
     #contact {
       border-top: 1px solid var(--border);
-      background: var(--surface);
     }
 
     .contact-layout {
@@ -691,6 +696,7 @@
       <li><a href="#about">About</a></li>
       <li><a href="#portfolio">Portfolio</a></li>
       <li><a href="#experience">Experience</a></li>
+      <li><a href="#research">Research</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
@@ -768,6 +774,13 @@
               </div>
             </div>
             <div class="credential-item">
+              <div class="cred-icon">🔬</div>
+              <div class="cred-text">
+                <span class="cred-title">Published Research — Graph Theory & Combinatorics</span>
+                <span class="cred-detail">Journal of Combinatorial Designs · 2022</span>
+              </div>
+            </div>
+            <div class="credential-item">
               <div class="cred-icon">🎮</div>
               <div class="cred-text">
                 <span class="cred-title">Unity Certified Associate Game Developer</span>
@@ -813,6 +826,7 @@
             <span class="skill-tag">Curriculum Dev</span>
             <span class="skill-tag">Applied Math</span>
             <span class="skill-tag">Data Analysis</span>
+            <span class="skill-tag">Graph Theory</span>
             <span class="skill-tag">Canvas LMS</span>
             <span class="skill-tag">WP Mail SMTP</span>
           </div>
@@ -1177,6 +1191,8 @@
           </div>
           <a href="https://classroom-tools-pwa.netlify.app/" class="project-link" target="_blank">Try the App</a>
         </div>
+
+        <!-- Project 18: Game Design Curriculum Map -->
         <div class="project-card fade-in-section" data-categories="instructional game">
           <div class="project-tags">
             <span class="project-tag">Instructional Design</span>
@@ -1198,7 +1214,7 @@
           <a href="https://shinneducation.com/store/" class="project-link" target="_blank">View in Shop</a>
         </div>
 
-        <!-- Project 13: Build It Right Branching Scenario -->
+        <!-- Project 19: Build It Right Branching Scenario -->
         <div class="project-card fade-in-section" data-categories="instructional game">
           <div class="project-tags">
             <span class="project-tag">Instructional Design</span>
@@ -1269,6 +1285,38 @@
     </div>
   </section>
 
+  <!-- ── RESEARCH ──────────────────────────────────────────── -->
+  <section id="research">
+    <div class="fade-in-section">
+      <div class="section-label">Research</div>
+      <h2 class="section-title">Published in <em>combinatorics.</em></h2>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">Journal of Combinatorial Designs · 2022</div>
+          <div class="timeline-role">
+            Primitive Cycle Decompositions of K<sub>n</sub> and K<sub>n</sub>&minus;I
+          </div>
+          <div class="timeline-org">
+            Co-authored with John Asplund, Chandra Dinavahi &amp; Michael W. Schroeder
+          </div>
+          <p class="timeline-desc">
+            Proved a reduction result toward classifying when complete graphs K<sub>n</sub>
+            and K<sub>n</sub>&minus;I admit primitive C<sub>m</sub>-decompositions.
+            Investigated cyclic and 1-rotational decomposition techniques to establish
+            existence proofs across several families of values of m and n.
+          </p>
+          <a href="https://doi.org/10.1002/jcd.21817"
+             class="project-link"
+             target="_blank"
+             style="margin-top: 1rem; display: inline-flex;">
+            View Publication
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── CONTACT ───────────────────────────────────────────── -->
   <section id="contact">
     <div class="fade-in-section">
@@ -1328,7 +1376,7 @@
   <!-- ── FOOTER ────────────────────────────────────────────── -->
   <footer>
     <span class="footer-name">Kira Shinn</span>
-    <span class="footer-note">Educator · Designer · Builder</span>
+    <span class="footer-note">Educator · Designer · Builder · Researcher</span>
   </footer>
 
   <!-- ── SCRIPTS ───────────────────────────────────────────── -->
@@ -1346,7 +1394,7 @@
       el.classList.add('animate');
       observer.observe(el);
     });
-    
+
     // Immediately show anything already in viewport on load
     setTimeout(() => {
       document.querySelectorAll('.fade-in-section').forEach(el => {
