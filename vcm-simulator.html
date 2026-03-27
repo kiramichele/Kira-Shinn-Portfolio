@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Classroom Management Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #131210;
+      --surface:  #1b1914;
+      --surface2: #201e19;
+      --gold:     #c8a45a;
+      --gold-dim: #7a6030;
+      --gold-bg:  rgba(200,164,90,0.07);
+      --gold-bg2: rgba(200,164,90,0.13);
+      --text:     #e4ddd2;
+      --muted:    #8a8070;
+      --border:   rgba(200,164,90,0.22);
+      --green:    #6dbfa0;
+      --green-bg: rgba(109,191,160,0.08);
+      --red:      #c97070;
+      --red-bg:   rgba(201,112,112,0.08);
+      --serif:    'Cormorant Garamond', Georgia, serif;
+      --sans:     'DM Sans', system-ui, sans-serif;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* grain */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      pointer-events: none; z-index: 0; opacity: 0.6;
+    }
+
+    #app {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 20px 80px;
+    }
+
+    /* ── top bar ── */
+    .topbar {
+      width: 100%; max-width: 700px;
+      padding: 32px 0 0;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .topbar-row {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .module-label {
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .dot-track { display: flex; align-items: center; gap: 5px; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .dot.hit  { background: var(--green); border-color: var(--green); }
+    .dot.miss { background: var(--gold-dim); border-color: var(--gold); }
+    .step-label { font-size: 10px; letter-spacing: 0.1em; color: var(--gold); }
+    .mistake-label {
+      font-size: 10px; letter-spacing: 0.06em; color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+      padding: 3px 10px;
+    }
+    .progress-track {
+      width: 100%; height: 1px;
+      background: rgba(200,164,90,0.12);
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--gold);
+      transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── card ── */
+    .card {
+      width: 100%; max-width: 700px;
+      margin-top: 32px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      animation: fadeUp 0.45s cubic-bezier(.4,0,.2,1) both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── cat tags ── */
+    .cat-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .cat-tag {
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--border);
+      padding: 3px 10px;
+    }
+
+    /* ── intro ── */
+    .intro-inner { padding: 52px 48px 52px; }
+    .intro-inner h1 {
+      font-family: var(--serif);
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 400; line-height: 1.15;
+      color: var(--text); margin-bottom: 18px;
+    }
+    .intro-inner h1 em { font-style: italic; color: var(--gold); }
+    .intro-inner p { color: var(--muted); font-size: 14px; line-height: 1.8; margin-bottom: 28px; max-width: 480px; }
+    .obj-label { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+    .obj-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 36px; }
+    .obj-item { display: flex; gap: 10px; font-size: 13px; color: var(--muted); align-items: flex-start; }
+    .obj-item::before { content: '—'; color: var(--gold-dim); flex-shrink: 0; margin-top: 2px; }
+
+    /* ── scene ── */
+    .scene-head { padding: 36px 44px 0; }
+    .scene-num {
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 10px;
+    }
+    .scene-title {
+      font-family: var(--serif);
+      font-size: 26px; font-weight: 500; color: var(--text);
+      margin-bottom: 22px; line-height: 1.2;
+    }
+    .situation-block {
+      background: rgba(255,255,255,0.025);
+      border-left: 2px solid var(--gold-dim);
+      padding: 14px 18px;
+      font-size: 13.5px; color: var(--muted);
+      line-height: 1.75; margin-bottom: 20px;
+    }
+    .situation-block em { color: var(--text); font-style: italic; }
+
+    .chat-bubble {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--gold-bg); border: 1px solid var(--border);
+      padding: 16px 20px; margin-bottom: 28px;
+    }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(200,164,90,0.15); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .bubble-body {}
+    .bubble-name { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .bubble-text { font-family: var(--serif); font-size: 16px; font-style: italic; color: var(--text); line-height: 1.6; }
+
+    .question-text {
+      font-family: var(--serif); font-size: 18px; font-weight: 500;
+      color: var(--text); padding: 0 44px 16px; line-height: 1.35;
+    }
+
+    /* ── choices ── */
+    .choices { display: flex; flex-direction: column; padding: 0 28px 36px; gap: 8px; }
+    .choice-btn {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 16px 18px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer; text-align: left; color: var(--text);
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      font-family: var(--sans);
+    }
+    .choice-btn:hover {
+      border-color: var(--border);
+      background: var(--gold-bg);
+      transform: translateX(4px);
+    }
+    .choice-letter {
+      width: 26px; height: 26px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; letter-spacing: 0.06em; color: var(--muted);
+      flex-shrink: 0; margin-top: 1px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .choice-btn:hover .choice-letter {
+      background: rgba(200,164,90,0.15);
+      border-color: var(--gold); color: var(--gold);
+    }
+    .choice-main { font-size: 14px; color: var(--text); line-height: 1.5; }
+    .choice-sub  { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 3px; }
+
+    /* ── feedback ── */
+    .feedback-inner { padding: 44px 48px 48px; }
+    .fb-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 20px;
+    }
+    .fb-icon.correct { background: var(--green-bg); border: 1px solid var(--green); color: var(--green); }
+    .fb-icon.wrong   { background: var(--red-bg);   border: 1px solid var(--red);   color: var(--red);   }
+    .fb-title {
+      font-family: var(--serif); font-size: 26px; font-weight: 500;
+      margin-bottom: 14px; line-height: 1.2;
+    }
+    .fb-title.correct { color: var(--green); }
+    .fb-title.wrong   { color: var(--red); }
+    .fb-explanation { font-size: 14px; color: var(--muted); line-height: 1.85; margin-bottom: 26px; }
+    .fb-explanation p + p { margin-top: 10px; }
+    .fb-explanation strong { color: var(--text); font-weight: 500; }
+    .fb-explanation em { color: var(--text); font-style: italic; }
+
+    .principle-box {
+      display: flex; gap: 16px;
+      background: var(--gold-bg); border: 1px solid var(--border);
+      padding: 18px 20px; margin-bottom: 28px;
+    }
+    .p-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+    .p-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+    .p-name { font-family: var(--serif); font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .p-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── end screen ── */
+    .end-inner { padding: 52px 48px; }
+    .end-inner h2 {
+      font-family: var(--serif); font-size: 36px; font-weight: 400;
+      color: var(--text); margin-bottom: 6px; line-height: 1.15;
+    }
+    .end-inner h2 em { font-style: italic; color: var(--gold); }
+    .end-sub { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+
+    .score-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
+      margin-bottom: 28px;
+    }
+    .score-stat {
+      background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 16px; text-align: center;
+    }
+    .score-stat.hl { border-color: var(--border); background: var(--gold-bg); }
+    .score-big {
+      font-family: var(--serif); font-size: 40px; font-weight: 400;
+      color: var(--text); line-height: 1; margin-bottom: 6px;
+    }
+    .score-big.perfect { color: var(--green); }
+    .score-big.good    { color: var(--gold); }
+    .score-stat-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+    .breakdown { display: flex; flex-direction: column; gap: 6px; margin-bottom: 32px; }
+    .bdown-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+      font-size: 13px;
+    }
+    .bdown-scene { color: var(--muted); flex: 1; }
+    .badge {
+      font-size: 10px; letter-spacing: 0.07em; padding: 2px 10px; border-radius: 20px;
+    }
+    .badge-first { background: var(--green-bg); color: var(--green); border: 1px solid rgba(109,191,160,0.3); }
+    .badge-retry { background: var(--gold-bg);  color: var(--gold);  border: 1px solid var(--border); }
+
+    .principles-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 32px; }
+    .p-card {
+      display: flex; gap: 18px;
+      padding: 18px 20px;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+      animation: fadeUp 0.4s both;
+    }
+    .p-card:nth-child(2) { animation-delay: 0.08s; }
+    .p-card:nth-child(3) { animation-delay: 0.16s; }
+    .p-num {
+      font-family: var(--serif); font-size: 36px; font-weight: 400;
+      color: rgba(200,164,90,0.2); line-height: 1; flex-shrink: 0; width: 44px;
+    }
+    .p-card-title { font-family: var(--serif); font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .p-card-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 26px; font-family: var(--sans); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+      border: none; transition: opacity 0.15s, transform 0.12s;
+      text-decoration: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-gold { background: var(--gold); color: var(--bg); font-weight: 500; }
+    .btn-gold:hover { opacity: 0.88; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-green { background: var(--green); color: var(--bg); font-weight: 500; }
+    .btn-green:hover { opacity: 0.88; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* ── inline choice feedback ── */
+    .choices.locked .choice-btn { pointer-events: none; cursor: default; }
+
+    .choice-btn.chosen-correct {
+      border-color: var(--green) !important;
+      background: var(--green-bg) !important;
+      transform: none !important;
+    }
+    .choice-btn.chosen-correct .choice-letter {
+      background: var(--green) !important;
+      border-color: var(--green) !important;
+      color: var(--bg) !important;
+      font-weight: 700;
+    }
+    .choice-btn.chosen-wrong {
+      border-color: var(--red) !important;
+      background: var(--red-bg) !important;
+      transform: none !important;
+    }
+    .choice-btn.chosen-wrong .choice-letter {
+      background: var(--red) !important;
+      border-color: var(--red) !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .choice-btn.dimmed {
+      opacity: 0.3;
+      transform: none !important;
+    }
+
+    .snap-reason {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 2px;
+      font-size: 12.5px;
+      line-height: 1.55;
+      animation: snapIn 0.25s cubic-bezier(.4,0,.2,1) both;
+      overflow: hidden;
+    }
+    .snap-reason.correct {
+      background: rgba(109,191,160,0.1);
+      border-left: 2px solid var(--green);
+      color: var(--green);
+    }
+    .snap-reason.wrong {
+      background: rgba(201,112,112,0.1);
+      border-left: 2px solid var(--red);
+      color: var(--red);
+    }
+    .snap-reason .snap-icon { flex-shrink: 0; font-weight: 700; margin-top: 1px; }
+    .snap-reason .snap-text { color: var(--text); }
+
+    @keyframes snapIn {
+      from { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; }
+      to   { opacity: 1; max-height: 80px; padding-top: 10px; padding-bottom: 10px; margin-top: 10px; }
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .shake { animation: shake 0.4s ease both; }
+
+    @media (max-width: 600px) {
+      .intro-inner, .feedback-inner, .end-inner { padding: 32px 24px; }
+      .scene-head { padding: 28px 24px 0; }
+      .question-text { padding: 0 24px 14px; }
+      .choices { padding: 0 16px 28px; }
+      .score-grid { grid-template-columns: 1fr 1fr; }
+      .score-grid .score-stat:last-child { grid-column: 1/-1; }
+    }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+
+/* ═══════════════════════════════════════
+   PRINCIPLES
+═══════════════════════════════════════ */
+const PRINCIPLES = [
+  {
+    title: 'Presence Over Perfection',
+    desc: 'In a virtual classroom, students cannot read your body language or sense energy in a room. Deliberate, consistent check-ins — not flawless delivery — are what build the relational presence students need to stay engaged.'
+  },
+  {
+    title: 'Separate the Tech from the Teaching',
+    desc: 'Tech failures are not classroom management failures. Having a clear protocol for technical disruptions keeps your instructional momentum alive and models calm problem-solving for students.'
+  },
+  {
+    title: 'Pace Is a Design Decision',
+    desc: 'Lesson pacing in a virtual environment must be actively managed — silence reads differently online, and transitions take longer than expected. Build pacing checkpoints into your plan, not just your content.'
+  }
+];
+
+/* ═══════════════════════════════════════
+   SCENES
+═══════════════════════════════════════ */
+const SCENES = {
+  intro: { type: 'intro' },
+
+  s1: {
+    type: 'scene', step: 1, total: 3,
+    title: 'Scene 1 — The Quiet Room',
+    situation: 'It\'s the third week of the semester. You open your Zoom session and fifteen students join — but only three have their cameras on and nobody has responded to your opening question in the chat. The attendance grid is full. They\'re there. They\'re just... silent.',
+    character: 'Chat feed', avatar: '💬',
+    dialogue: '"[no response]"',
+    question: 'What\'s your first move?',
+    choices: [
+      { letter:'A', text:'Call on a specific student by name to answer the question', sub:'"Put someone on the spot — that usually wakes the room up."', next:'s1_fa', correct:false, snap:'Cold calling can spike anxiety online — silence often gets worse, not better.' },
+      { letter:'B', text:'Drop a quick poll or emoji reaction prompt in the chat to break the silence with a low-stakes entry point', sub:'"Lower the bar — get any response first."', next:'s2', correct:true, snap:'Correct — a low-stakes prompt invites everyone in with zero risk of public failure.' },
+      { letter:'C', text:'Move forward with the lesson and assume students are listening even if they\'re not engaging', sub:'"I\'ll check in at the end — they probably just need a minute."', next:'s1_fc', correct:false, snap:'Silence in a virtual room is data — moving on without addressing it makes it worse.' }
+    ]
+  },
+
+  s1_fa: {
+    type: 'feedback', correct: false,
+    sceneId: 's1', step: 1,
+    title: 'Cold Calling Backfires',
+    explanation: 'Cold calling can work in a physical room where social pressure is visible — but in a virtual environment it often increases anxiety without increasing engagement. A student called on unexpectedly may freeze, go mute, or simply not respond, making the silence worse and setting a tense tone for the rest of the session.\n\n<strong>The goal of an opening prompt is to get the room moving, not to test readiness.</strong> A low-stakes entry point — a poll, an emoji reaction, a one-word chat drop — gives every student a way in without the risk of public failure.',
+    principle: 0, retry: 's1'
+  },
+  s1_fc: {
+    type: 'feedback', correct: false,
+    sceneId: 's1', step: 1,
+    title: 'Silence Is Data',
+    explanation: 'In a virtual classroom, a silent room is not a neutral room — it\'s feedback. Proceeding without addressing the disengagement means you\'ll deliver a full lesson to students who were never present in any meaningful sense.\n\n<strong>Presence in a virtual environment is built through small, repeated interactions.</strong> Letting silence slide early in a session teaches students that passive attendance is acceptable, and that pattern compounds over the semester.',
+    principle: 0, retry: 's1'
+  },
+
+  s2: {
+    type: 'scene', step: 2, total: 3,
+    title: 'Scene 2 — Tech Meltdown',
+    situation: 'Mid-lesson. You\'re twenty minutes in and students are starting to engage. Then your screen share freezes, your audio cuts out, and the Zoom chat explodes: "can\'t hear you," "screen is black," "are you still there?" By the time you realize what\'s happened, two minutes have passed.',
+    character: 'Student — chat', avatar: '🎮',
+    dialogue: '"Mrs. Shinn?? Nothing is working, are we done for today?"',
+    question: 'What do you do?',
+    choices: [
+      { letter:'A', text:'Immediately stop everything and spend the remaining class time troubleshooting live with students watching', sub:'"I need to fix this now before I lose them completely."', next:'s2_fa', correct:false, snap:'Live troubleshooting loses the class and models panic — not the message you want to send.' },
+      { letter:'B', text:'Post a clear message in the chat — "Tech issue, give me 2 min, do [specific task] while you wait" — then quietly rejoin or restart', sub:'"Keep them busy, fix the problem, come back clean."', next:'s3', correct:true, snap:'Correct — a prepared protocol keeps students on task and you in control.' },
+      { letter:'C', text:'End the session early and post a make-up video later', sub:'"Better to cut losses than waste their time."', next:'s2_fc', correct:false, snap:'Ending early signals that tech issues cancel class — that pattern compounds fast.' }
+    ]
+  },
+
+  s2_fa: {
+    type: 'feedback', correct: false,
+    sceneId: 's2', step: 2,
+    title: 'Don\'t Fix It Out Loud',
+    explanation: 'Live troubleshooting in front of a class is rarely effective and always costly. Students watch you struggle, the instructional thread is completely lost, and the session ends feeling chaotic regardless of whether the tech gets fixed.\n\n<strong>A tech failure protocol keeps you in control.</strong> The move is to give students something concrete to do — review notes, respond to a prompt, discuss with a partner — and then fix the problem quietly. When you come back, the session continues. Students learn that tech issues are handled, not survived.',
+    principle: 1, retry: 's2'
+  },
+  s2_fc: {
+    type: 'feedback', correct: false,
+    sceneId: 's2', step: 2,
+    title: 'Don\'t Cut Early',
+    explanation: 'Ending early signals to students that tech problems are insurmountable — and that class time is optional. A make-up video is not equivalent to live instruction, and students will notice that showing up doesn\'t always matter.\n\n<em>A two-minute disruption does not have to be a lost class.</em> <strong>Most tech issues resolve quickly when approached methodically.</strong> Having a standard message ready — posted to chat the moment something goes wrong — lets you step away, fix it, and return without the session unraveling.',
+    principle: 1, retry: 's2'
+  },
+
+  s3: {
+    type: 'scene', step: 3, total: 3,
+    title: 'Scene 3 — Running Out of Clock',
+    situation: 'With ten minutes left, you realize you\'ve only covered half the planned content. The remaining material is dense — and it includes the concept students need for their assignment due tomorrow. Students are still engaged, but you can feel the session wrapping up.',
+    character: 'Your lesson plan', avatar: '📋',
+    dialogue: '"Slides 14–22: Core concept introduction, worked example, practice problem, exit ticket. Time remaining: 10 minutes."',
+    question: 'What do you do with ten minutes left?',
+    choices: [
+      { letter:'A', text:'Speed through all remaining slides to technically "cover" everything before the bell', sub:'"They need to see it before the assignment."', next:'s3_fa', correct:false, snap:'Rushing through content creates the illusion of teaching — students retain almost none of it.' },
+      { letter:'B', text:'Pick the single most critical concept, teach it well, and post a short async resource covering the rest', sub:'"One thing landed is worth more than five things rushed."', next:'end', correct:true, snap:'Correct — one concept taught well beats five concepts shown. Bridge the rest async.' },
+      { letter:'C', text:'Skip the content entirely and extend the session beyond the scheduled end time', sub:'"I can\'t leave them without this — I\'ll just go over."', next:'s3_fc', correct:false, snap:'Students can\'t consent to extra time mid-session — going over creates cascading problems.' }
+    ]
+  },
+
+  s3_fa: {
+    type: 'feedback', correct: false,
+    sceneId: 's3', step: 3,
+    title: 'Coverage Is Not Learning',
+    explanation: 'Racing through slides creates the illusion of instruction without the substance of it. Students watching a teacher rush through dense content at the end of a session retain very little — and they still have to complete the assignment.\n\n<strong>Pacing is a design decision that should happen before the lesson, not during it.</strong> When you\'re behind on time, the professional move is to triage — identify the one concept that unlocks everything else, teach that well, and bridge the rest with async support. That\'s a better learning outcome than a blurry slideshow sprint.',
+    principle: 2, retry: 's3'
+  },
+  s3_fc: {
+    type: 'feedback', correct: false,
+    sceneId: 's3', step: 3,
+    title: 'Going Over Time Costs More Than It Saves',
+    explanation: 'Extending beyond the scheduled end creates a cascade of problems: students who have back-to-back obligations leave mid-sentence, parents receive unexpected childcare disruptions, and you establish that your time management is unpredictable.\n\n<em>Students can\'t consent to extra time during a live session.</em> <strong>Async resources — a short Loom video, a worked example doc, a linked reading — are often more effective than rushed live instruction anyway</strong>, because students can pause, rewind, and review at the moment they actually need it. Plan to finish on time. Bridge the gaps outside the session.',
+    principle: 2, retry: 's3'
+  },
+
+  end: { type: 'end' }
+};
+
+/* ═══════════════════════════════════════
+   SCORE STATE
+═══════════════════════════════════════ */
+let sceneAttempts = {};
+let currentSceneId = null;
+
+function resetScore() { sceneAttempts = {}; currentSceneId = null; }
+function recordAttempt(id) {
+  if (!sceneAttempts[id]) sceneAttempts[id] = 0;
+  sceneAttempts[id]++;
+}
+function totalAttempts()  { return Object.values(sceneAttempts).reduce((a,b)=>a+b,0); }
+function totalMistakes()  { return totalAttempts() - 3; }
+function firstTryCount()  { return Object.values(sceneAttempts).filter(v=>v===1).length; }
+function getRating() {
+  const m = totalMistakes();
+  if (m === 0) return { label:'Perfect Session',   cls:'perfect' };
+  if (m <= 2)  return { label:'Solid Instincts',   cls:'good'    };
+  return              { label:'Keep Practicing',   cls:''        };
+}
+
+/* ═══════════════════════════════════════
+   RENDER
+═══════════════════════════════════════ */
+let currentScene = 'intro';
+
+function go(id) {
+  currentScene = id;
+  const s = SCENES[id];
+  if (s.type === 'scene') currentSceneId = id;
+  if (id === 'intro') resetScore();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function render() {
+  const s = SCENES[currentScene];
+  document.getElementById('app').innerHTML = buildTopbar(s) + buildCard(s);
+}
+
+function buildTopbar(s) {
+  if (s.type === 'intro' || s.type === 'end') return '';
+  const step = s.step || 0, total = s.total || 3;
+  const pct = s.type === 'feedback' ? (step/total*100) : ((step-1)/total*100);
+  const keys = ['s1','s2','s3'];
+  const dots = keys.map(k => {
+    const a = sceneAttempts[k];
+    if (!a) return `<span class="dot"></span>`;
+    return `<span class="dot ${a===1?'hit':'miss'}"></span>`;
+  }).join('');
+  const m = totalMistakes();
+  return `
+  <div class="topbar">
+    <div class="topbar-row">
+      <span class="module-label">VCM Simulator · New Educator Training</span>
+      <div class="topbar-right">
+        <div class="dot-track">${dots}</div>
+        <span class="mistake-label">${m===0?'No mistakes':m+' mistake'+(m!==1?'s':'')}</span>
+        ${step ? `<span class="step-label">Scene ${step} / ${total}</span>` : ''}
+      </div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+  </div>`;
+}
+
+function buildCard(s) {
+  if (s.type === 'intro')    return buildIntro();
+  if (s.type === 'scene')    return buildScene(s);
+  if (s.type === 'feedback') return buildFeedback(s);
+  if (s.type === 'end')      return buildEnd();
+  return '';
+}
+
+function buildIntro() {
+  return `
+  <div class="card">
+    <div class="intro-inner">
+      <div class="cat-row">
+        <span class="cat-tag">Instructional Design</span>
+        <span class="cat-tag">Scenario-Based Learning</span>
+      </div>
+      <h1>Virtual Classroom<br><em>Management Simulator</em></h1>
+      <p>You're a new virtual educator navigating your first semester online. Three real situations. Real consequences. Immediate feedback on every decision you make.</p>
+      <div class="obj-label">What you'll practice</div>
+      <div class="obj-list">
+        <div class="obj-item">Strategies for building presence and engagement in a virtual classroom</div>
+        <div class="obj-item">Protocols for managing tech failures without losing instructional momentum</div>
+        <div class="obj-item">In-the-moment pacing decisions when a lesson runs long</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="go('s1')">Begin Simulation →</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildScene(s) {
+  // Store choices globally so onclick just needs the index
+  window._currentChoices = s.choices;
+  window._currentSceneIdForChoices = s.id || currentScene;
+  const choices = s.choices.map((c, i) => `
+    <button class="choice-btn" id="choice-${i}" onclick="handleChoice(${i})">
+      <div class="choice-letter">${c.letter}</div>
+      <div style="flex:1">
+        <div class="choice-main">${c.text}</div>
+        <div class="choice-sub">${c.sub}</div>
+        <div class="snap-reason" id="snap-${i}" style="display:none"></div>
+      </div>
+    </button>`).join('');
+  return `
+  <div class="card">
+    <div class="scene-head">
+      <div class="scene-num">Scene ${s.step} of ${s.total}</div>
+      <div class="scene-title">${s.title}</div>
+      <div class="situation-block">${s.situation}</div>
+      <div class="chat-bubble">
+        <div class="avatar">${s.avatar}</div>
+        <div class="bubble-body">
+          <div class="bubble-name">${s.character}</div>
+          <div class="bubble-text">${s.dialogue}</div>
+        </div>
+      </div>
+    </div>
+    <div class="question-text">${s.question}</div>
+    <div class="choices" id="choices-wrap">${choices}</div>
+  </div>`;
+}
+
+function buildFeedback(s) {
+  const p = PRINCIPLES[s.principle];
+  const icon = s.correct ? '✓' : '✗';
+  const btnLabel = s.correct ? 'Continue →' : 'Try Again';
+  const btnNext  = s.correct ? (s.next || getNextScene(s.sceneId)) : s.retry;
+  const btnCls   = s.correct ? 'btn-green' : 'btn-gold';
+  const paras    = s.explanation.split('\n\n').map(p=>`<p>${p}</p>`).join('');
+  return `
+  <div class="card">
+    <div class="feedback-inner">
+      <div class="fb-icon ${s.correct?'correct':'wrong'}">${icon}</div>
+      <div class="fb-title ${s.correct?'correct':'wrong'}">${s.title}</div>
+      <div class="fb-explanation">${paras}</div>
+      <div class="principle-box">
+        <div class="p-icon">◆</div>
+        <div>
+          <div class="p-label">Core Principle</div>
+          <div class="p-name">${p.title}</div>
+          <div class="p-desc">${p.desc}</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn ${btnCls}" onclick="go('${btnNext}')">${btnLabel}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getNextScene(id) {
+  const map = { s1:'s2', s2:'s3', s3:'end' };
+  return map[id] || 'end';
+}
+
+function buildEnd() {
+  const rating = getRating();
+  const m = totalMistakes();
+  const ft = firstTryCount();
+  const sceneLabels = { s1:'Scene 1 — The Quiet Room', s2:'Scene 2 — Tech Meltdown', s3:'Scene 3 — Running Out of Clock' };
+  const breakdown = ['s1','s2','s3'].map(k => {
+    const a = sceneAttempts[k] || 1;
+    const lbl = a===1 ? 'First Try ✓' : `${a} Attempts`;
+    const cls = a===1 ? 'badge-first' : 'badge-retry';
+    return `<div class="bdown-row"><span class="bdown-scene">${sceneLabels[k]}</span><span class="badge ${cls}">${lbl}</span></div>`;
+  }).join('');
+
+  const pcards = PRINCIPLES.map((p,i) => `
+    <div class="p-card">
+      <div class="p-num">0${i+1}</div>
+      <div>
+        <div class="p-card-title">${p.title}</div>
+        <div class="p-card-desc">${p.desc}</div>
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="card" style="margin-top:48px">
+    <div class="end-inner">
+      <div class="cat-row"><span class="cat-tag">Simulation Complete</span></div>
+      <h2>Session<br><em>${rating.label}</em></h2>
+      <p class="end-sub">Here's how you navigated the virtual classroom:</p>
+      <div class="score-grid">
+        <div class="score-stat hl">
+          <div class="score-big ${rating.cls}">${m===0?'★':m}</div>
+          <div class="score-stat-label">${m===0?'Perfect Run':'Mistake'+(m!==1?'s':'')}</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-big" style="color:var(--green)">${ft}</div>
+          <div class="score-stat-label">First Try</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-big">${totalAttempts()}</div>
+          <div class="score-stat-label">Total Attempts</div>
+        </div>
+      </div>
+      <div class="breakdown">${breakdown}</div>
+      <div class="obj-label" style="margin-bottom:14px">Principles Covered</div>
+      <div class="principles-list">${pcards}</div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="go('intro')">Restart Simulation</button>
+        <button class="btn btn-outline" onclick="go('intro')">← Back to Start</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function handleChoice(chosenIdx) {
+  const choices = window._currentChoices;
+  const sceneId = window._currentSceneIdForChoices;
+  const c = choices[chosenIdx];
+  const nextId = c.next;
+  const correct = c.correct;
+
+  if (sceneId) currentSceneId = sceneId;
+  recordAttempt(currentSceneId);
+
+  // Lock all buttons
+  const wrap = document.getElementById('choices-wrap');
+  if (wrap) wrap.classList.add('locked');
+
+  // Style each button and reveal snap reason on chosen
+  choices.forEach((c, i) => {
+    const btn  = document.getElementById('choice-' + i);
+    const snap = document.getElementById('snap-' + i);
+    if (!btn) return;
+
+    if (i === chosenIdx) {
+      btn.classList.add(correct ? 'chosen-correct' : 'chosen-wrong');
+      if (snap && c.snap) {
+        snap.style.display = 'flex';
+        snap.className = 'snap-reason ' + (correct ? 'correct' : 'wrong');
+        snap.innerHTML = `<span class="snap-icon">${correct ? '✓' : '✗'}</span><span class="snap-text">${c.snap}</span>`;
+      }
+      if (!correct) {
+        btn.classList.add('shake');
+        setTimeout(() => btn.classList.remove('shake'), 420);
+      }
+    } else {
+      btn.classList.add('dimmed');
+    }
+  });
+
+  // For correct choices, wire up the next scene on the feedback card
+  if (correct) {
+    const nextSceneAfterFeedback = getNextScene(currentSceneId);
+    const fb = SCENES[nextId];
+    if (fb) fb.next = nextSceneAfterFeedback;
+  }
+
+  // Transition after a beat so user can read the snap reason
+  setTimeout(() => go(nextId), correct ? 1200 : 1600);
+}
+
+render();
+</script>
+</body>
+</html>

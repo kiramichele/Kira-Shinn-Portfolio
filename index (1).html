@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kira Shinn — Educator & Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg:        #141414;
+      --surface:   #1e1e1e;
+      --border:    #2e2e2e;
+      --gold:      #c9a84c;
+      --gold-dim:  #9b7a2f;
+      --text:      #e8e0d4;
+      --muted:     #8a8070;
+      --white:     #f5f0ea;
+      --tag-bg:    #252217;
+      --serif: 'Cormorant Garamond', serif;
+      --sans:  'DM Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 4rem;
+      background: rgba(20,20,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: padding 0.3s ease;
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid-overlay {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 820px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1s ease 0.2s forwards;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: var(--white);
+      margin-bottom: 1.4rem;
+    }
+    .hero-title em { font-style: italic; color: var(--gold); }
+
+    .hero-sub { font-size: 1.1rem; color: var(--muted); max-width: 520px; line-height: 1.75; margin-bottom: 2.8rem; }
+    .hero-ctas { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-block; padding: 0.85rem 2rem;
+      background: var(--gold); color: #0e0c08;
+      font-family: var(--sans); font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: #dbb95a; transform: translateY(-2px); }
+
+    .btn-outline {
+      display: inline-block; padding: 0.85rem 2rem;
+      border: 1px solid var(--border); color: var(--muted);
+      font-family: var(--sans); font-size: 0.78rem; font-weight: 400;
+      letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 4rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); opacity: 0;
+      animation: fadeIn 1s ease 1.4s forwards;
+    }
+    .scroll-line { width: 1px; height: 40px; background: var(--border); animation: scrollPulse 2s ease-in-out 1.4s infinite; }
+
+    section { padding: 7rem 4rem; }
+
+    .section-label {
+      font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--gold-dim); }
+
+    .section-title {
+      font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 300; line-height: 1.1; color: var(--white); margin-bottom: 1.6rem;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    #about { border-top: 1px solid var(--border); }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; margin-top: 3rem; }
+    .about-text p { color: var(--muted); line-height: 1.85; margin-bottom: 1.2rem; font-size: 1rem; }
+    .about-text p strong { color: var(--text); font-weight: 400; }
+
+    .credentials { margin-bottom: 3rem; }
+    .credential-item { display: flex; gap: 1.2rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .credential-item:last-child { border-bottom: none; }
+    .cred-icon { width: 36px; height: 36px; background: var(--tag-bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+    .cred-text { display: flex; flex-direction: column; gap: 0.2rem; }
+    .cred-title { font-size: 0.88rem; color: var(--text); font-weight: 400; }
+    .cred-detail { font-size: 0.78rem; color: var(--muted); }
+
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-tag {
+      padding: 0.35rem 0.85rem; background: var(--tag-bg); border: 1px solid var(--border);
+      font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-tag:hover { border-color: var(--gold-dim); color: var(--text); }
+
+    #portfolio { border-top: 1px solid var(--border); background: var(--surface); }
+
+    .filter-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 2.5rem 0 3rem; }
+    .filter-btn {
+      padding: 0.45rem 1.1rem; background: transparent; border: 1px solid var(--border);
+      color: var(--muted); font-family: var(--sans); font-size: 0.72rem;
+      letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--tag-bg); }
+
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5px; }
+
+    .project-card {
+      background: var(--bg); padding: 2.2rem; border: 1px solid var(--border);
+      transition: border-color 0.25s, transform 0.25s; cursor: pointer; position: relative; overflow: hidden;
+    }
+    .project-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+    }
+    .project-card:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
+    .project-card:hover::before { transform: scaleX(1); }
+    .project-card.hidden { display: none; }
+
+    .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .project-tag { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); padding: 0.2rem 0.6rem; border: 1px solid var(--gold-dim); }
+    .project-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; color: var(--white); margin-bottom: 0.7rem; line-height: 1.2; }
+    .project-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.5rem; }
+    .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .stack-item { font-size: 0.68rem; letter-spacing: 0.06em; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 0.18rem 0.55rem; }
+    .project-link { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.4rem; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); text-decoration: none; transition: gap 0.2s; }
+    .project-link:hover { gap: 0.7rem; }
+    .project-link::after { content: '→'; }
+
+    #experience { border-top: 1px solid var(--border); }
+
+    .timeline { margin-top: 3rem; position: relative; }
+    .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--border); }
+    .timeline-item { padding: 0 0 3rem 2.5rem; position: relative; }
+    .timeline-item::before { content: ''; position: absolute; left: -4px; top: 6px; width: 9px; height: 9px; background: var(--gold); border-radius: 50%; }
+    .timeline-date { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+    .timeline-role { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; color: var(--white); margin-bottom: 0.2rem; }
+    .timeline-org { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; }
+    .timeline-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.75; max-width: 600px; }
+
+    #research { border-top: 1px solid var(--border); background: var(--surface); }
+    #contact { border-top: 1px solid var(--border); }
+
+    .contact-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; margin-top: 3rem; align-items: start; }
+    .contact-info p { font-size: 1rem; color: var(--muted); line-height: 1.8; margin-bottom: 2rem; }
+    .contact-links { display: flex; flex-direction: column; gap: 0.8rem; }
+    .contact-link { display: flex; align-items: center; gap: 1rem; text-decoration: none; padding: 0.85rem 1.2rem; background: var(--bg); border: 1px solid var(--border); transition: border-color 0.2s; }
+    .contact-link:hover { border-color: var(--gold); }
+    .contact-link-icon { font-size: 1.1rem; width: 28px; text-align: center; }
+    .contact-link-text { font-size: 0.85rem; color: var(--muted); }
+    .contact-link:hover .contact-link-text { color: var(--text); }
+
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .form-group input, .form-group textarea { background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--sans); font-size: 0.9rem; padding: 0.85rem 1rem; outline: none; transition: border-color 0.2s; resize: none; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--gold); }
+    .form-submit { padding: 0.9rem 2rem; background: var(--gold); border: none; color: #0e0c08; font-family: var(--sans); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; align-self: flex-start; transition: background 0.2s, transform 0.2s; }
+    .form-submit:hover { background: #dbb95a; transform: translateY(-2px); }
+
+    footer { border-top: 1px solid var(--border); padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center; }
+    .footer-name { font-family: var(--serif); font-size: 1rem; color: var(--muted); font-style: italic; }
+    .footer-note { font-size: 0.72rem; letter-spacing: 0.1em; color: var(--border); }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+    .fade-in-section { opacity: 1; transform: translateY(0); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in-section.animate { opacity: 0; transform: translateY(24px); }
+    .fade-in-section.animate.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      section { padding: 5rem 2rem; }
+      #hero { padding: 0 2rem; }
+      .about-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-scroll { left: 2rem; }
+      footer { padding: 1.5rem 2rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#hero" class="nav-logo">Kira Shinn</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Portfolio</div>
+      <h1 class="hero-title">Educator.<br><em>Designer.</em><br>Builder.</h1>
+      <p class="hero-sub">I create learning experiences that stick — from interactive game design curricula to full-stack web applications. Unity certified. Math-brained. Always making something.</p>
+      <div class="hero-ctas">
+        <a href="#portfolio" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div>Scroll</div>
+  </section>
+
+  <section id="about">
+    <div class="fade-in-section">
+      <div class="section-label">About</div>
+      <h2 class="section-title">Where creativity<br>meets <em>rigor.</em></h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>I sit at the intersection of two things most developers don't have: real teaching experience and full-stack technical skills. That means I don't just build things that work — I build things that work for the people using them.</p>
+          <p>Five years of fully virtual teaching, dual degrees in <strong>Applied Mathematics and Education</strong>, a Certificate in Instructional Design (ADDIE), and a Unity Certified Associate certification — I bring analytical precision and creative execution to every project, whether that's an e-commerce storefront, an interactive eLearning course, or a data dashboard backed by real statistical analysis.</p>
+          <p>Outside the classroom, I build things: WooCommerce stores, e-commerce websites with Stripe and Firestore, interactive learning tools, Kanban apps, handmade ceramics — and the occasional Python data pipeline. I believe the best instructional designers are people who never stopped being learners themselves.</p>
+        </div>
+        <div class="about-right">
+          <div class="credentials">
+            <div class="credential-item">
+              <div class="cred-icon">📐</div>
+              <div class="cred-text">
+                <span class="cred-title">Certificate Program in Instructional Design (ADDIE Model)</span>
+                <span class="cred-detail">Udemy · Learning and Development Academy · 2026</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="cred-icon">🎓</div>
+              <div class="cred-text">
+                <span class="cred-title">B.S. Applied Mathematics & B.S. Education</span>
+                <span class="cred-detail">Marshall University</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="cred-icon">🔬</div>
+              <div class="cred-text">
+                <span class="cred-title">Published Research — Graph Theory & Combinatorics</span>
+                <span class="cred-detail">Journal of Combinatorial Designs · 2022</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="cred-icon">🎮</div>
+              <div class="cred-text">
+                <span class="cred-title">Unity Certified Associate Game Developer</span>
+                <span class="cred-detail">Unity Technologies</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="cred-icon">💻</div>
+              <div class="cred-text">
+                <span class="cred-title">STEM Instructor</span>
+                <span class="cred-detail">Georgia Cyber Academy · 5+ years virtual</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="cred-icon">🌐</div>
+              <div class="cred-text">
+                <span class="cred-title">Full-Stack Web Developer</span>
+                <span class="cred-detail">WordPress · WooCommerce · Netlify · Firebase · Supabase · Stripe</span>
+              </div>
+            </div>
+          </div>
+          <div class="section-label" style="margin-bottom: 1rem;">Skills</div>
+          <div class="skills-grid">
+            <span class="skill-tag">Unity</span><span class="skill-tag">C#</span><span class="skill-tag">Python</span>
+            <span class="skill-tag">HTML / CSS / JS</span><span class="skill-tag">WordPress</span><span class="skill-tag">WooCommerce</span>
+            <span class="skill-tag">Elementor</span><span class="skill-tag">Stripe</span><span class="skill-tag">Firebase</span>
+            <span class="skill-tag">Supabase</span><span class="skill-tag">Netlify</span><span class="skill-tag">Blender</span>
+            <span class="skill-tag">Pandas</span><span class="skill-tag">NumPy</span><span class="skill-tag">Matplotlib</span>
+            <span class="skill-tag">SQL</span><span class="skill-tag">Tableau</span><span class="skill-tag">Instructional Design</span>
+            <span class="skill-tag">Curriculum Dev</span><span class="skill-tag">Applied Math</span><span class="skill-tag">Data Analysis</span>
+            <span class="skill-tag">Graph Theory</span><span class="skill-tag">Canvas LMS</span><span class="skill-tag">TutorLMS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <div class="fade-in-section">
+      <div class="section-label">Portfolio</div>
+      <h2 class="section-title">Work that <em>teaches,</em><br>tools that build.</h2>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Work</button>
+        <button class="filter-btn" data-filter="instructional">Instructional Design</button>
+        <button class="filter-btn" data-filter="game">Game Design</button>
+        <button class="filter-btn" data-filter="web">Web Development</button>
+        <button class="filter-btn" data-filter="math">Math & Education</button>
+        <button class="filter-btn" data-filter="data">Data & Analytics</button>
+      </div>
+
+      <div class="projects-grid">
+
+        <div class="project-card" data-categories="instructional math">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">Curriculum</span></div>
+          <h3 class="project-title">PyPath Python Curriculum</h3>
+          <p class="project-desc">A full-sequence Python curriculum designed for beginners. Covers core programming concepts through progressive, standards-aligned modules with interactive exercises and assessment checkpoints.</p>
+          <div class="project-stack"><span class="stack-item">Python</span><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Pyodide</span><span class="stack-item">ADDIE Model</span><span class="stack-item">Netlify</span></div>
+          <a href="https://pypath.netlify.app" class="project-link" target="_blank">View Live Site</a>
+        </div>
+
+        <div class="project-card" data-categories="game web instructional">
+          <div class="project-tags"><span class="project-tag">Game Design</span><span class="project-tag">Web Dev</span></div>
+          <h3 class="project-title">Game Design Course Hub</h3>
+          <p class="project-desc">A multi-page retro neon course website for Unity game design students, featuring shortcut reference pages, a live Firestore-backed community board, and direct assignment links.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Firebase Firestore</span><span class="stack-item">Netlify</span><span class="stack-item">Unity</span></div>
+          <a href="https://gcagamedesign.com" class="project-link" target="_blank">View Live Site</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">Scenario-Based Learning</span></div>
+          <h3 class="project-title">Virtual Classroom Management Simulator</h3>
+          <p class="project-desc">A choose-your-own-adventure branching scenario for new virtual educators. Learners navigate realistic classroom situations and receive immediate feedback on each decision.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Branching Logic</span><span class="stack-item">Scenario Design</span><span class="stack-item">Netlify</span></div>
+          <a href="vcm-simulator.html" class="project-link" target="_blank">Try the Scenario</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">Needs Analysis</span></div>
+          <h3 class="project-title">Training Needs Analysis Report</h3>
+          <p class="project-desc">A formal Training Needs Analysis based on real student performance data from Georgia Cyber Academy. Includes a full Kirkpatrick Level 1–4 evaluation plan with measurable success criteria.</p>
+          <div class="project-stack"><span class="stack-item">Needs Analysis</span><span class="stack-item">Kirkpatrick Model</span><span class="stack-item">ADDIE</span><span class="stack-item">Data-Driven Design</span></div>
+          <a href="needs-analysis-final.docx" class="project-link" target="_blank">Download Report</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional game">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">eLearning</span></div>
+          <h3 class="project-title">Scope & Sequence: Game Design Production Module</h3>
+          <p class="project-desc">A three-lesson Rise 360 module for game design students. Learners practice a must-have / nice-to-have / cut-it feature framework and complete a GDD checklist. Exports as SCORM for LMS deployment.</p>
+          <div class="project-stack"><span class="stack-item">Articulate Rise 360</span><span class="stack-item">SCORM</span><span class="stack-item">Data-Driven Design</span><span class="stack-item">Game Design</span></div>
+          <a href="https://share.articulate.com/8LYIdD1x1V8EJ3Wg08RZA" class="project-link" target="_blank">View Module</a>
+        </div>
+
+        <div class="project-card" data-categories="game instructional">
+          <div class="project-tags"><span class="project-tag">Game Design</span><span class="project-tag">Instructional Design</span></div>
+          <h3 class="project-title">Unity Certified Associate Exam Prep</h3>
+          <p class="project-desc">An interactive study website to prepare students for the Unity Certified Associate exam — the same certification I hold. Includes topic breakdowns, practice scenarios, and a self-assessment quiz system.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Unity (Subject Matter)</span><span class="stack-item">Netlify</span></div>
+        </div>
+
+        <div class="project-card" data-categories="instructional math">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">EdTech</span></div>
+          <h3 class="project-title">Interactive Lesson & Review Suite</h3>
+          <p class="project-desc">A collection of interactive HTML lesson slides, async study guides, and Jeopardy review games for two concurrent STEM courses aligned to Georgia IT-GDAS standards.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Georgia IT-GDAS</span><span class="stack-item">Virtual Delivery</span><span class="stack-item">Canvas LMS</span></div>
+          <a href="https://ucagd-exam-review-suite.netlify.app/" class="project-link" target="_blank">View Live Site</a>
+        </div>
+
+        <div class="project-card" data-categories="web">
+          <div class="project-tags"><span class="project-tag">Web Dev</span><span class="project-tag">E-Commerce</span></div>
+          <h3 class="project-title">Kira Shinn Ceramics — Shop</h3>
+          <p class="project-desc">A full e-commerce website for my handmade ceramics business with a custom Firestore product database, live Stripe checkout, real-time inventory, category filtering, and a cart drawer.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Firebase Firestore</span><span class="stack-item">Stripe</span><span class="stack-item">Netlify Functions</span></div>
+          <a href="https://kirashinnceramics.netlify.app" class="project-link" target="_blank">View Live Site</a>
+        </div>
+
+        <div class="project-card" data-categories="web">
+          <div class="project-tags"><span class="project-tag">Web Dev</span><span class="project-tag">App Design</span></div>
+          <h3 class="project-title">Pottery Production Tracker</h3>
+          <p class="project-desc">A Kanban-style web app to track ceramic pieces through production. Features drag-and-drop columns, photo uploads to Supabase Storage, and real-time sync across devices.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Supabase</span><span class="stack-item">Netlify</span></div>
+          <a href="https://kirashinnceramicsprep.netlify.app" class="project-link" target="_blank">View Live App</a>
+        </div>
+
+        <div class="project-card" data-categories="data math">
+          <div class="project-tags"><span class="project-tag">Data Analysis</span><span class="project-tag">Python</span></div>
+          <h3 class="project-title">Steam Farming & Life Sim Market Analysis</h3>
+          <p class="project-desc">End-to-end data science project analyzing 3,680 Steam games. Covers API scraping, data cleaning, and statistical testing — including a one-sample t-test confirming Stardew Valley as a genre outlier (t = −41.91, p &lt; 0.001).</p>
+          <div class="project-stack"><span class="stack-item">Python</span><span class="stack-item">Pandas</span><span class="stack-item">Matplotlib</span><span class="stack-item">Plotly</span><span class="stack-item">SteamSpy API</span><span class="stack-item">Jupyter</span></div>
+          <a href="https://steam-analysis-dashboard.netlify.app/" class="project-link" target="_blank">View Dashboard</a>
+          <a href="https://github.com/kiramichele/steam-analysis" class="project-link" target="_blank" style="margin-top: 0.5rem;">View on GitHub</a>
+        </div>
+
+        <div class="project-card" data-categories="data math instructional">
+          <div class="project-tags"><span class="project-tag">Data Analysis</span><span class="project-tag">Tableau</span></div>
+          <h3 class="project-title">US Education Outcomes: What Predicts Student Success?</h3>
+          <p class="project-desc">Interactive Tableau dashboard analyzing NAEP scores across all 50 states. Finds poverty rate explains 68% of score variation (R² = 0.68) — nearly 5× more than per-pupil spending alone.</p>
+          <div class="project-stack"><span class="stack-item">Tableau Public</span><span class="stack-item">NAEP Data</span><span class="stack-item">Python</span><span class="stack-item">Pandas</span><span class="stack-item">Data Storytelling</span></div>
+          <a href="https://public.tableau.com/app/profile/kira.shinn3500/viz/USEducationOutcomesAnalysis/USEducationOutcomesWhatActuallyPredictsStudentSuccess" class="project-link" target="_blank">View Dashboard</a>
+        </div>
+
+        <div class="project-card" data-categories="web instructional">
+          <div class="project-tags"><span class="project-tag">Web Dev</span><span class="project-tag">E-Commerce</span></div>
+          <h3 class="project-title">ShinnEd — Digital Curriculum Marketplace</h3>
+          <p class="project-desc">A full WooCommerce digital product store built on WordPress + Elementor with Stripe payment integration, instant digital download delivery, and variable product tiers.</p>
+          <div class="project-stack"><span class="stack-item">WordPress</span><span class="stack-item">WooCommerce</span><span class="stack-item">Elementor</span><span class="stack-item">Stripe</span><span class="stack-item">WPForms</span><span class="stack-item">Hostinger</span></div>
+          <a href="https://shinneducation.com" class="project-link" target="_blank">View Live Site</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional math">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">EdTech</span></div>
+          <h3 class="project-title">JavaScript Fundamentals Interactive Coding Activity</h3>
+          <p class="project-desc">A self-grading, in-browser JavaScript coding activity with instant feedback and error-specific debugging hints. Covers variables, math operations, strings, and print statements. No setup required.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">CSTA Standards</span><span class="stack-item">Georgia CTAE</span><span class="stack-item">Self-Grading</span></div>
+          <a href="https://javascriptbeginnerlessons.netlify.app/" class="project-link" target="_blank">Try the Demo</a>
+        </div>
+
+        <div class="project-card" data-category="web-dev">
+  <div class="project-tags">
+    <span class="tag">Web Dev</span>
+    <span class="tag">WordPress</span>
+  </div>
+  <h3>MoneyRoots — Personal Finance Landing Page</h3>
+  <p>A full landing page for a free personal finance course, built in WordPress with Beaver Builder. Features a custom accordion FAQ, testimonials section, curriculum grid, and branded design system.</p>
+  <div class="project-skills">
+    <span>WordPress</span>
+    <span>Beaver Builder</span>
+    <span>Astra</span>
+    <span>CSS</span>
+    <span>Hostinger</span>
+  </div>
+  <a href="https://moneyroots.space" target="_blank" class="project-link">View Live Site</a>
+</div>
+
+        <div class="project-card" data-categories="instructional web">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">Web Dev</span></div>
+          <h3 class="project-title">AP CSP — Complete Python Curriculum</h3>
+          <p class="project-desc">A full 102-day AP Computer Science Principles curriculum. Includes interactive slide decks, HTML lessons for all 6 units, a 10-tool exam prep suite, and a Create PT scaffold with a live rubric quality checker.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Python</span><span class="stack-item">College Board AP Framework</span><span class="stack-item">ADDIE Model</span></div>
+          <a href="https://shinneducation.com/store/" class="project-link" target="_blank">View in Shop</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional web">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">EdTech</span></div>
+          <h3 class="project-title">IST — Complete Interactive Curriculum</h3>
+          <p class="project-desc">A full-semester Introduction to Software Technology curriculum across 9 units with 18 browser-based activities including a desktop simulator, PC builder, CSS playground, and a 5-room escape room.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Georgia CTAE</span><span class="stack-item">CSTA Standards</span><span class="stack-item">ISTE Standards</span></div>
+          <a href="https://shinneducation.com/store/" class="project-link" target="_blank">View in Shop</a>
+        </div>
+
+        <div class="project-card" data-categories="web">
+          <div class="project-tags"><span class="project-tag">Web Dev</span><span class="project-tag">Chrome Extension</span></div>
+          <h3 class="project-title">Writing Monitor</h3>
+          <p class="project-desc">A classroom writing-integrity tool built as a Chrome extension paired with a React teacher dashboard. Monitors student writing sessions and streams timestamped events to Supabase in real time.</p>
+          <div class="project-stack"><span class="stack-item">Chrome Extension (MV3)</span><span class="stack-item">React + Vite</span><span class="stack-item">Supabase</span><span class="stack-item">JavaScript</span></div>
+        </div>
+
+        <div class="project-card" data-categories="web instructional">
+          <div class="project-tags"><span class="project-tag">Web Dev</span><span class="project-tag">EdTech</span></div>
+          <h3 class="project-title">Classroom Tools — PWA</h3>
+          <p class="project-desc">A Progressive Web App suite of five classroom tools — countdown timer, interval timer, random name picker, dice roller, and live class poll. Installable on any device from the browser.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">PWA</span><span class="stack-item">Service Worker</span><span class="stack-item">Netlify</span></div>
+          <a href="https://classroom-tools-pwa.netlify.app/" class="project-link" target="_blank">Try the App</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional game">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">Game Design</span></div>
+          <h3 class="project-title">Game Design: Full Semester Curriculum Map</h3>
+          <p class="project-desc">A complete interactive HTML curriculum map covering 62 days of a high school Game Design course, aligned to Georgia CTAE and CSTA standards. Opens in any browser with no software needed.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Georgia CTAE</span><span class="stack-item">CSTA Standards</span><span class="stack-item">Unity</span></div>
+          <a href="https://shinneducation.com/store/" class="project-link" target="_blank">View in Shop</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional game">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">Scenario-Based Learning</span></div>
+          <h3 class="project-title">Build It Right — Game Design Branching Scenario</h3>
+          <p class="project-desc">A scenario-based learning activity for game design students. Learners navigate three real Unity project decisions with immediate feedback and design principle reinforcement on every choice.</p>
+          <div class="project-stack"><span class="stack-item">HTML/CSS/JS</span><span class="stack-item">Branching Logic</span><span class="stack-item">Scenario Design</span><span class="stack-item">Unity</span></div>
+          <a href="branching-scenario.html" class="project-link" target="_blank">Try the Scenario</a>
+        </div>
+
+        <div class="project-card" data-categories="instructional web">
+          <div class="project-tags"><span class="project-tag">Instructional Design</span><span class="project-tag">LMS</span></div>
+          <h3 class="project-title">Intro to Game Design Thinking — LMS Course</h3>
+          <p class="project-desc">A fully built online course on WordPress + TutorLMS. Includes 6 lessons across 3 units, 3 quizzes with scored assessments, and a custom Elementor homepage — written from 5+ years of real game design teaching experience.</p>
+          <div class="project-stack"><span class="stack-item">WordPress</span><span class="stack-item">TutorLMS</span><span class="stack-item">Elementor Pro</span><span class="stack-item">Instructional Design</span><span class="stack-item">ADDIE Model</span></div>
+          <a href="https://gdtcourse.com" class="project-link" target="_blank">View Live Site</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="fade-in-section">
+      <div class="section-label">Experience</div>
+      <h2 class="section-title">Where I've <em>taught</em><br>and built.</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">Sept 2021 — Present</div>
+          <div class="timeline-role">High School Computer Science & Game Design Teacher</div>
+          <div class="timeline-org">Georgia Cyber Academy — Fully Virtual, K–12 Charter</div>
+          <p class="timeline-desc">Design and teach Game Design: Animation & Simulation and Introduction to Software Technology to 125+ students across multiple sections. Devise project-based assignments for hands-on skill building; evaluate and adjust curriculum using data analysis of student performance. Build and maintain custom interactive course websites to replace static LMS delivery.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Mar 2021 — Jun 2021</div>
+          <div class="timeline-role">Subject Matter Expert — Mathematics</div>
+          <div class="timeline-org">Second Avenue Learning</div>
+          <p class="timeline-desc">Collaborated with fellow instructors to refine and improve program curriculum. Produced and edited instructional math videos to supplement educational content.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Aug 2019 — Jun 2021</div>
+          <div class="timeline-role">High School Math Teacher</div>
+          <div class="timeline-org">Logan County WV BOE — Chapmanville Regional High School</div>
+          <p class="timeline-desc">Delivered class sessions in Geometry and Financial Algebra aligned to state standards. Customized instructional plans for individual students and prepared students for the SAT.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="project-card" data-category="web-dev">
+  <div class="project-tags">
+    <span class="tag">Web Dev</span>
+    <span class="tag">Instructional Design</span>
+  </div>
+  <h3>Course Outline Generator</h3>
+  <p>An AI-powered tool that generates complete ADDIE-structured course outlines from user inputs. Accepts course title, audience, duration, objectives, and standards — outputs a full framework with unit breakdown, assessment strategy, and evaluation plan.</p>
+  <div class="project-skills">
+    <span>React</span>
+    <span>Netlify Functions</span>
+    <span>Anthropic API</span>
+    <span>ADDIE Model</span>
+  </div>
+  <a href="https://courseoutlinegenerator.netlify.app" target="_blank" class="project-link">Try the Tool</a>
+</div>
+
+  <section id="research">
+    <div class="fade-in-section">
+      <div class="section-label">Research</div>
+      <h2 class="section-title">Published in <em>combinatorics.</em></h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">Journal of Combinatorial Designs · 2022</div>
+          <div class="timeline-role">Primitive Cycle Decompositions of K<sub>n</sub> and K<sub>n</sub>&minus;I</div>
+          <div class="timeline-org">Co-authored with John Asplund, Chandra Dinavahi &amp; Michael W. Schroeder</div>
+          <p class="timeline-desc">Proved a reduction result toward classifying when complete graphs K<sub>n</sub> and K<sub>n</sub>&minus;I admit primitive C<sub>m</sub>-decompositions. Investigated cyclic and 1-rotational decomposition techniques to establish existence proofs across several families of values of m and n.</p>
+          <a href="https://doi.org/10.1002/jcd.21817" class="project-link" target="_blank" style="margin-top: 1rem; display: inline-flex;">View Publication</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="fade-in-section">
+      <div class="section-label">Contact</div>
+      <h2 class="section-title">Let's build<br>something <em>great.</em></h2>
+      <div class="contact-layout">
+        <div class="contact-info">
+          <p>I'm currently open to instructional design, curriculum development, game design education, and web development opportunities. Whether you have a role, a project, or just want to talk shop — I'd love to hear from you.</p>
+          <div class="contact-links">
+            <a href="mailto:kiramicheleshinn@gmail.com" class="contact-link">
+              <span class="contact-link-icon">✉️</span>
+              <span class="contact-link-text">kiramicheleshinn@gmail.com</span>
+            </a>
+            <a href="https://www.linkedin.com/in/kiramicheleshinn" class="contact-link" target="_blank">
+              <span class="contact-link-icon">💼</span>
+              <span class="contact-link-text">linkedin.com/in/kiramicheleshinn</span>
+            </a>
+            <a href="https://github.com/kiramichele" class="contact-link" target="_blank">
+              <span class="contact-link-icon">🐙</span>
+              <span class="contact-link-text">github.com/kiramichele</span>
+            </a>
+            <a href="Kira_Shinn_Resume.pdf" class="contact-link" target="_blank">
+              <span class="contact-link-icon">📄</span>
+              <span class="contact-link-text">Download Resume (PDF)</span>
+            </a>
+          </div>
+        </div>
+        <form class="contact-form" name="contact" netlify>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" placeholder="What's this about?" />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell me about the opportunity..."></textarea>
+          </div>
+          <button type="submit" class="form-submit">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-name">Kira Shinn</span>
+    <span class="footer-note">Educator · Designer · Builder · Researcher</span>
+  </footer>
+
+  <script>
+    // ── Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in-section').forEach(el => {
+      el.classList.add('animate');
+      observer.observe(el);
+    });
+
+    setTimeout(() => {
+      document.querySelectorAll('.fade-in-section').forEach(el => {
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          el.classList.add('visible');
+        }
+      });
+    }, 100);
+
+    // ── Portfolio filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          if (filter === 'all') {
+            card.classList.remove('hidden');
+          } else {
+            const cats = card.dataset.categories || '';
+            card.classList.toggle('hidden', !cats.includes(filter));
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
