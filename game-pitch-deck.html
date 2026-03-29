@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEONRIFT — Game Pitch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --void:    #060810;
+  --panel:   #0b0f1a;
+  --steel:   #111827;
+  --neon:    #00F5D4;
+  --hot:     #FF3CAC;
+  --gold:    #FFD166;
+  --muted:   #3a4560;
+  --text:    #CBD5E1;
+  --dim:     #4a5568;
+  --slide-w: 1000px;
+}
+
+body {
+  background: var(--void);
+  font-family: 'Barlow Condensed', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 22px 16px 40px;
+  color: var(--text);
+  /* Scanline overlay */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,245,212,0.012) 2px,
+    rgba(0,245,212,0.012) 4px
+  );
+}
+
+/* ── NAV ── */
+.nav {
+  width: 100%;
+  max-width: var(--slide-w);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--muted);
+  padding-bottom: 12px;
+}
+.nav-brand {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--neon);
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 20px rgba(0,245,212,0.5);
+}
+.nav-brand span { color: var(--hot); }
+.nav-controls { display: flex; gap: 8px; align-items: center; }
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--dim);
+  padding: 5px 14px;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  transition: all 0.15s;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+.nav-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px rgba(0,245,212,0.15); }
+.slide-counter {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--dim);
+  letter-spacing: 0.12em;
+}
+
+/* ── DECK ── */
+.deck-wrapper { width: 100%; max-width: var(--slide-w); }
+.progress-bar {
+  height: 2px;
+  background: var(--muted);
+  margin-bottom: 10px;
+  position: relative;
+  overflow: visible;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--hot), var(--neon));
+  transition: width 0.4s ease;
+  box-shadow: 0 0 8px rgba(0,245,212,0.6);
+}
+
+.slide-viewport {
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--muted);
+  box-shadow:
+    0 0 0 1px rgba(0,245,212,0.08),
+    0 40px 100px rgba(0,0,0,0.8),
+    inset 0 0 80px rgba(0,0,0,0.4);
+}
+/* Corner brackets on viewport */
+.slide-viewport::before, .slide-viewport::after {
+  content: '';
+  position: absolute;
+  width: 24px; height: 24px;
+  z-index: 100;
+  pointer-events: none;
+}
+.slide-viewport::before {
+  top: 0; left: 0;
+  border-top: 2px solid var(--neon);
+  border-left: 2px solid var(--neon);
+  box-shadow: inset 0 0 6px rgba(0,245,212,0.3);
+}
+.slide-viewport::after {
+  bottom: 0; right: 0;
+  border-bottom: 2px solid var(--hot);
+  border-right: 2px solid var(--hot);
+  box-shadow: inset 0 0 6px rgba(255,60,172,0.3);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+}
+.slide.active { display: flex; animation: glitch-in 0.35s steps(1, end); }
+@keyframes glitch-in {
+  0%   { opacity: 0; clip-path: inset(40% 0 40% 0); }
+  20%  { opacity: 1; clip-path: inset(0% 0 80% 0); transform: translateX(-4px); }
+  40%  { clip-path: inset(60% 0 0% 0); transform: translateX(4px); }
+  60%  { clip-path: inset(0% 0 0% 0); transform: translateX(-2px); }
+  80%  { clip-path: inset(0); transform: translateX(0); }
+  100% { clip-path: inset(0); opacity: 1; }
+}
+
+/* ── REUSABLE COMPONENTS ── */
+.slide-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.45rem, 0.85vw, 0.58rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 4%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.slide-tag::before {
+  content: '';
+  display: inline-block;
+  width: 20px; height: 1px;
+  background: var(--neon);
+  box-shadow: 0 0 6px var(--neon);
+}
+
+.hl { color: var(--neon); }
+.hl-hot { color: var(--hot); }
+.hl-gold { color: var(--gold); }
+
+/* ─────────────────────────────
+   S1 — TITLE
+───────────────────────────── */
+#s1 {
+  background: var(--void);
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 7% 10%;
+  position: relative;
+}
+/* Animated grid */
+#s1 .bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,212,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,212,0.04) 1px, transparent 1px);
+  background-size: clamp(30px,5vw,50px) clamp(30px,5vw,50px);
+  animation: gridScroll 12s linear infinite;
+}
+@keyframes gridScroll {
+  0%   { background-position: 0 0; }
+  100% { background-position: 50px 50px; }
+}
+/* Glow orbs */
+#s1 .orb1 {
+  position: absolute;
+  top: -10%; right: 5%;
+  width: 50%; height: 80%;
+  background: radial-gradient(ellipse, rgba(255,60,172,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+#s1 .orb2 {
+  position: absolute;
+  bottom: -20%; left: 30%;
+  width: 40%; height: 60%;
+  background: radial-gradient(ellipse, rgba(0,245,212,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.title-eyebrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.5rem, 0.9vw, 0.62rem);
+  color: var(--hot);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 3%;
+  position: relative;
+}
+.title-eyebrow::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.game-title {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 0.88;
+  color: var(--text);
+  position: relative;
+  margin-bottom: 2%;
+  text-shadow: 0 0 40px rgba(0,245,212,0.15);
+}
+.game-title .accent { color: var(--neon); text-shadow: 0 0 30px rgba(0,245,212,0.8); }
+.game-genre {
+  font-size: clamp(0.7rem, 1.5vw, 1rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 5%;
+  position: relative;
+}
+.title-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.badge {
+  border: 1px solid;
+  padding: 4px 12px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.45rem, 0.8vw, 0.56rem);
+  letter-spacing: 0.12em;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+}
+.badge-neon { border-color: var(--neon); color: var(--neon); }
+.badge-hot  { border-color: var(--hot);  color: var(--hot);  }
+.badge-gold { border-color: var(--gold); color: var(--gold); }
+.title-studio {
+  position: absolute;
+  bottom: 7%; right: 9%;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.4rem, 0.7vw, 0.52rem);
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────────
+   S2 — OVERVIEW / LOG LINE
+───────────────────────────── */
+#s2 {
+  background: var(--panel);
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+}
+#s2 .left {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8% 6% 8% 9%;
+  border-right: 1px solid var(--muted);
+}
+#s2 .right {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7% 8%;
+  gap: 5%;
+}
+#s2 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1rem, 2.5vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 5%;
+}
+.logline {
+  font-size: clamp(0.7rem, 1.4vw, 0.92rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold);
+  line-height: 1.6;
+  border-left: 2px solid var(--gold);
+  padding-left: 5%;
+  margin-bottom: 5%;
+}
+#s2 .desc {
+  font-size: clamp(0.55rem, 1.05vw, 0.7rem);
+  color: var(--text);
+  line-height: 1.7;
+  opacity: 0.8;
+}
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4% 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-key {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.45rem, 0.8vw, 0.56rem);
+  color: var(--dim);
+  letter-spacing: 0.1em;
+}
+.spec-val {
+  font-size: clamp(0.55rem, 1vw, 0.68rem);
+  font-weight: 600;
+  color: var(--neon);
+}
+
+/* ─────────────────────────────
+   S3 — CORE GAMEPLAY LOOP
+───────────────────────────── */
+#s3 {
+  background: var(--void);
+  flex-direction: column;
+  justify-content: center;
+  padding: 6% 9%;
+  position: relative;
+}
+#s3 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5%;
+}
+.loop-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+}
+.loop-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+.loop-hex {
+  width: clamp(60px, 10vw, 85px);
+  height: clamp(60px, 10vw, 85px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: var(--panel);
+  border: none;
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  transition: transform 0.2s;
+  cursor: default;
+}
+.loop-hex:hover { transform: scale(1.05); }
+.loop-hex.c1 { background: linear-gradient(135deg, #1a0f2e, #2d1b69); box-shadow: 0 0 20px rgba(0,245,212,0.15); }
+.loop-hex.c2 { background: linear-gradient(135deg, #1a0a1a, #4a0a2a); box-shadow: 0 0 20px rgba(255,60,172,0.15); }
+.loop-hex.c3 { background: linear-gradient(135deg, #0a1a1a, #0a2d2d); box-shadow: 0 0 20px rgba(0,245,212,0.15); }
+.loop-hex.c4 { background: linear-gradient(135deg, #1a1400, #2d2100); box-shadow: 0 0 20px rgba(255,209,102,0.15); }
+.loop-hex.c5 { background: linear-gradient(135deg, #1a0f2e, #2d1b69); box-shadow: 0 0 20px rgba(0,245,212,0.15); }
+.loop-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.42rem, 0.78vw, 0.54rem);
+  color: var(--neon);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+.loop-desc {
+  font-size: clamp(0.45rem, 0.82vw, 0.56rem);
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.4;
+  max-width: 90px;
+}
+.loop-arrow {
+  font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-bottom: clamp(28px, 5vw, 46px);
+}
+.loop-pillars {
+  display: flex;
+  gap: 3%;
+  margin-top: 4%;
+}
+.pillar {
+  flex: 1;
+  background: rgba(0,245,212,0.04);
+  border: 1px solid rgba(0,245,212,0.12);
+  padding: 3% 4%;
+  border-radius: 2px;
+}
+.pillar h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.5rem, 0.9vw, 0.62rem);
+  color: var(--neon);
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.pillar p {
+  font-size: clamp(0.45rem, 0.82vw, 0.56rem);
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────
+   S4 — VISUAL STYLE / WORLD
+───────────────────────────── */
+#s4 {
+  background: var(--panel);
+  flex-direction: row;
+  position: relative;
+}
+#s4 .left {
+  width: 40%;
+  padding: 7% 5% 7% 8%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--muted);
+}
+#s4 .right {
+  width: 60%;
+  padding: 5% 7%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3%;
+}
+#s4 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.9rem, 2vw, 1.35rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4%;
+  line-height: 1.3;
+}
+#s4 .world-desc {
+  font-size: clamp(0.52rem, 0.98vw, 0.66rem);
+  color: var(--dim);
+  line-height: 1.65;
+}
+.palette-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 5%;
+}
+.swatch {
+  flex: 1;
+  height: clamp(18px, 3.5vw, 28px);
+  border-radius: 1px;
+  position: relative;
+}
+.swatch::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.35rem, 0.6vw, 0.44rem);
+  color: var(--dim);
+  white-space: nowrap;
+}
+.visual-card {
+  background: var(--steel);
+  border: 1px solid var(--muted);
+  border-radius: 2px;
+  padding: 4% 5%;
+  display: flex;
+  gap: 4%;
+  align-items: flex-start;
+  transition: border-color 0.2s;
+}
+.visual-card:hover { border-color: var(--neon); }
+.visual-card .icon { font-size: clamp(1rem, 2vw, 1.4rem); flex-shrink: 0; }
+.visual-card h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.48rem, 0.88vw, 0.6rem);
+  color: var(--neon);
+  margin-bottom: 4px;
+}
+.visual-card p {
+  font-size: clamp(0.45rem, 0.82vw, 0.56rem);
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────
+   S5 — PLATFORM & MARKET
+───────────────────────────── */
+#s5 {
+  background: var(--void);
+  flex-direction: column;
+  justify-content: center;
+  padding: 6% 9%;
+  position: relative;
+}
+#s5 .bg-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.5;
+}
+#s5 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4%;
+}
+.market-dash {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3%;
+  margin-bottom: 4%;
+}
+.mcard {
+  background: var(--panel);
+  border: 1px solid var(--muted);
+  border-top: 2px solid;
+  padding: 5% 5%;
+  border-radius: 2px;
+}
+.mcard.c-neon { border-top-color: var(--neon); }
+.mcard.c-hot  { border-top-color: var(--hot);  }
+.mcard.c-gold { border-top-color: var(--gold); }
+.mcard .big {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.2rem, 3vw, 2.2rem);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.mcard.c-neon .big { color: var(--neon); text-shadow: 0 0 15px rgba(0,245,212,0.4); }
+.mcard.c-hot  .big { color: var(--hot);  text-shadow: 0 0 15px rgba(255,60,172,0.4); }
+.mcard.c-gold .big { color: var(--gold); text-shadow: 0 0 15px rgba(255,209,102,0.4); }
+.mcard .mlabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.45rem, 0.82vw, 0.56rem);
+  color: var(--dim);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.mcard .mdesc {
+  font-size: clamp(0.48rem, 0.88vw, 0.6rem);
+  color: var(--dim);
+  line-height: 1.5;
+}
+.platform-row {
+  display: flex;
+  gap: 3%;
+}
+.platform-pill {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--muted);
+  padding: 3.5% 4%;
+  display: flex;
+  align-items: center;
+  gap: 5%;
+  border-radius: 2px;
+  transition: border-color 0.2s;
+}
+.platform-pill:hover { border-color: var(--neon); }
+.platform-pill .icon { font-size: clamp(1.1rem, 2.2vw, 1.5rem); }
+.platform-pill h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.48rem, 0.88vw, 0.6rem);
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.platform-pill p {
+  font-size: clamp(0.42rem, 0.75vw, 0.52rem);
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+/* ─────────────────────────────
+   S6 — MONETIZATION
+───────────────────────────── */
+#s6 {
+  background: var(--panel);
+  flex-direction: row;
+  position: relative;
+}
+#s6 .left {
+  width: 45%;
+  padding: 7% 5% 7% 8%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--muted);
+}
+#s6 .right {
+  width: 55%;
+  padding: 5% 7%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3%;
+}
+#s6 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.9rem, 2vw, 1.35rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4%;
+  line-height: 1.3;
+}
+.rev-total {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(255,209,102,0.4);
+  margin-bottom: 4px;
+}
+.rev-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.45rem, 0.82vw, 0.56rem);
+  color: var(--dim);
+  letter-spacing: 0.12em;
+  margin-bottom: 5%;
+}
+.rev-note {
+  font-size: clamp(0.5rem, 0.92vw, 0.62rem);
+  color: var(--dim);
+  line-height: 1.65;
+}
+.mono-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3.5% 4%;
+  background: var(--steel);
+  border: 1px solid var(--muted);
+  border-left: 3px solid;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.mono-row:hover { background: rgba(0,245,212,0.03); border-color: var(--neon); border-left-color: var(--neon); }
+.mono-row.a { border-left-color: var(--neon); }
+.mono-row.b { border-left-color: var(--hot); }
+.mono-row.c { border-left-color: var(--gold); }
+.mono-row.d { border-left-color: #a78bfa; }
+.mono-row .m-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.48rem, 0.88vw, 0.6rem);
+  font-weight: 600;
+  color: var(--text);
+}
+.mono-row .m-desc {
+  font-size: clamp(0.44rem, 0.8vw, 0.54rem);
+  color: var(--dim);
+  margin-top: 2px;
+}
+.mono-row .m-val {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.55rem, 1vw, 0.68rem);
+  color: var(--gold);
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 4%;
+}
+/* Bar track */
+.bar-track {
+  height: 3px;
+  background: var(--muted);
+  margin-top: 4px;
+  border-radius: 1px;
+  overflow: hidden;
+}
+.bar-fill { height: 100%; border-radius: 1px; }
+
+/* ─────────────────────────────
+   S7 — PRODUCTION TIMELINE
+───────────────────────────── */
+#s7 {
+  background: var(--void);
+  flex-direction: column;
+  justify-content: center;
+  padding: 6% 9%;
+  position: relative;
+}
+#s7 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5%;
+}
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: clamp(50px, 9vw, 72px);
+  top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--neon), var(--hot), transparent);
+  opacity: 0.3;
+}
+.tl-row {
+  display: flex;
+  align-items: center;
+  padding: 2.5% 0;
+  gap: 4%;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.tl-row:last-child { border-bottom: none; }
+.tl-phase {
+  width: clamp(50px, 9vw, 72px);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.42rem, 0.75vw, 0.52rem);
+  color: var(--dim);
+  letter-spacing: 0.08em;
+  text-align: right;
+  flex-shrink: 0;
+}
+.tl-dot {
+  width: clamp(8px, 1.5vw, 12px);
+  height: clamp(8px, 1.5vw, 12px);
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid;
+  background: var(--void);
+  position: relative;
+  z-index: 1;
+}
+.tl-dot.done  { background: var(--neon); border-color: var(--neon); box-shadow: 0 0 8px var(--neon); }
+.tl-dot.now   { background: var(--hot);  border-color: var(--hot);  box-shadow: 0 0 12px var(--hot); animation: pulse 1.5s ease-in-out infinite; }
+.tl-dot.next  { border-color: var(--dim); }
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 6px var(--hot); }
+  50%     { box-shadow: 0 0 18px var(--hot); }
+}
+.tl-content { flex: 1; }
+.tl-content h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.52rem, 0.95vw, 0.65rem);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.tl-content p {
+  font-size: clamp(0.44rem, 0.8vw, 0.54rem);
+  color: var(--dim);
+  line-height: 1.45;
+}
+.tl-duration {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.42rem, 0.75vw, 0.52rem);
+  color: var(--gold);
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* ─────────────────────────────
+   S8 — TEAM
+───────────────────────────── */
+#s8 {
+  background: var(--panel);
+  flex-direction: column;
+  justify-content: center;
+  padding: 6% 9%;
+  position: relative;
+}
+#s8 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4%;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.5%;
+}
+.tcard {
+  background: var(--steel);
+  border: 1px solid var(--muted);
+  padding: 5% 5%;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.tcard:hover { border-color: var(--neon); }
+.tcard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon), var(--hot));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tcard:hover::before { opacity: 1; }
+.tcard-avatar {
+  width: clamp(30px, 5.5vw, 44px);
+  height: clamp(30px, 5.5vw, 44px);
+  background: linear-gradient(135deg, var(--muted), var(--steel));
+  border: 1px solid var(--muted);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+  margin-bottom: 4%;
+}
+.tcard h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.5rem, 0.92vw, 0.62rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.tcard .trole {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.4rem, 0.72vw, 0.5rem);
+  color: var(--neon);
+  letter-spacing: 0.1em;
+  margin-bottom: 5%;
+}
+.tcard p {
+  font-size: clamp(0.44rem, 0.78vw, 0.54rem);
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────
+   S9 — THE ASK / CTA
+───────────────────────────── */
+#s9 {
+  background: var(--void);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 6% 11%;
+  position: relative;
+}
+#s9 .bg-grid2 {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,60,172,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,60,172,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+#s9 .glow-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 80%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,60,172,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+#s9 h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.5rem, 4.5vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 3%;
+  position: relative;
+}
+#s9 h2 .glitch {
+  color: var(--hot);
+  text-shadow: 0 0 30px rgba(255,60,172,0.7);
+}
+#s9 .ask-desc {
+  font-size: clamp(0.55rem, 1.05vw, 0.7rem);
+  color: var(--dim);
+  line-height: 1.7;
+  max-width: 70%;
+  margin-bottom: 5%;
+  position: relative;
+}
+.ask-stats {
+  display: flex;
+  gap: 6%;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 5%;
+}
+.astat .val {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.2rem, 3.2vw, 2.4rem);
+  font-weight: 900;
+  color: var(--neon);
+  text-shadow: 0 0 20px rgba(0,245,212,0.5);
+  line-height: 1;
+}
+.astat .lbl {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.42rem, 0.78vw, 0.54rem);
+  color: var(--dim);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+.astat-div { width: 1px; background: var(--muted); align-self: stretch; }
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  padding: 8px 24px;
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.5rem, 0.95vw, 0.65rem);
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  background: rgba(0,245,212,0.05);
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: all 0.2s;
+  text-transform: uppercase;
+  position: relative;
+}
+.cta-btn:hover {
+  background: rgba(0,245,212,0.15);
+  box-shadow: 0 0 20px rgba(0,245,212,0.25);
+}
+
+/* ── THUMBNAILS ── */
+.thumbnails {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.thumb {
+  width: 58px; height: 32px;
+  border: 1px solid var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.5rem;
+  color: var(--dim);
+  letter-spacing: 0.05em;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+}
+.thumb:hover { border-color: #555; color: #888; }
+.thumb.active { border-color: var(--neon); color: var(--neon); background: rgba(0,245,212,0.06); box-shadow: 0 0 8px rgba(0,245,212,0.1); }
+
+.hint {
+  margin-top: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+kbd {
+  background: var(--panel);
+  border: 1px solid var(--muted);
+  padding: 1px 5px;
+  color: var(--dim);
+  font-size: 0.55rem;
+  font-family: 'Share Tech Mono', monospace;
+}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <a href="https://kirashinnportfolio.com/slide-decks" style="font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:#3a4560;letter-spacing:0.15em;text-decoration:none;border:1px solid #3a4560;padding:4px 12px;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00F5D4';this.style.borderColor='#00F5D4';" onmouseout="this.style.color='#3a4560';this.style.borderColor='#3a4560';">← ALL DECKS</a>
+    <div class="nav-brand">NEON<span>RIFT</span></div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">◀ PREV</button>
+    <span class="slide-counter" id="counter">01 / 09</span>
+    <button class="nav-btn" onclick="changeSlide(1)">NEXT ▶</button>
+  </div>
+</div>
+
+<div class="deck-wrapper">
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+  <div class="slide-viewport">
+
+    <!-- S1: TITLE -->
+    <div class="slide active" id="s1">
+      <div class="bg-grid"></div>
+      <div class="orb1"></div>
+      <div class="orb2"></div>
+      <div class="title-eyebrow">Game Pitch Presentation</div>
+      <div class="game-title"><span class="accent">NEON</span><br>RIFT</div>
+      <div class="game-genre">Open-World Action RPG · Cyberpunk Noir</div>
+      <div class="title-badges">
+        <div class="badge badge-neon">PC / CONSOLE</div>
+        <div class="badge badge-hot">SINGLE + MULTIPLAYER</div>
+        <div class="badge badge-gold">UNREAL ENGINE 5</div>
+        <div class="badge badge-neon">ESRB M</div>
+      </div>
+      <div class="title-studio">[STUDIO NAME] · PITCH DECK v1.4 · 2025</div>
+    </div>
+
+    <!-- S2: OVERVIEW -->
+    <div class="slide" id="s2">
+      <div class="left">
+        <div class="slide-tag">01 — Overview</div>
+        <h2>Cyberpunk Noir<br>Meets Tactical<br>Open World</h2>
+        <div class="logline">"A disgraced detective navigates a rain-soaked megacity where every ally has a price and every choice rewrites the city's fate."</div>
+        <div class="desc">NEONRIFT is a 30-40 hour open-world action RPG set in a dystopian megacity controlled by warring corporate factions. Players build a web of alliances, expose conspiracies, and reshape the city through gameplay — not just dialogue trees.</div>
+      </div>
+      <div class="right">
+        <div class="spec-row">
+          <span class="spec-key">GENRE</span>
+          <span class="spec-val">Action RPG / Open World</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">ENGINE</span>
+          <span class="spec-val">Unreal Engine 5</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">PLATFORMS</span>
+          <span class="spec-val">PC, PS5, Xbox Series X</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">TARGET RATING</span>
+          <span class="spec-val">ESRB M (Mature)</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">PLAYTIME</span>
+          <span class="spec-val">30–40 hrs main / 60+ full</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">MODES</span>
+          <span class="spec-val">Story + Optional Co-Op</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">TARGET RELEASE</span>
+          <span class="spec-val">Q3 2027</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">BUDGET ASK</span>
+          <span class="spec-val hl-gold">$14M</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3: GAMEPLAY LOOP -->
+    <div class="slide" id="s3">
+      <div class="slide-tag">02 — Core Gameplay</div>
+      <h2>The Core Loop</h2>
+      <div class="loop-container">
+        <div class="loop-node">
+          <div class="loop-hex c1">🔍</div>
+          <div class="loop-label">INVESTIGATE</div>
+          <div class="loop-desc">Gather evidence, surveil targets, hack city systems</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node">
+          <div class="loop-hex c2">🤝</div>
+          <div class="loop-label">RECRUIT</div>
+          <div class="loop-desc">Build faction alliances, unlock abilities & safe houses</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node">
+          <div class="loop-hex c3">⚔️</div>
+          <div class="loop-label">CONFRONT</div>
+          <div class="loop-desc">Tactical combat, stealth, or social engineering</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node">
+          <div class="loop-hex c4">🌆</div>
+          <div class="loop-label">RESHAPE</div>
+          <div class="loop-desc">City districts change based on your outcomes</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node">
+          <div class="loop-hex c5">📈</div>
+          <div class="loop-label">PROGRESS</div>
+          <div class="loop-desc">New cases, deeper conspiracies, escalating stakes</div>
+        </div>
+      </div>
+      <div class="loop-pillars">
+        <div class="pillar">
+          <h4>🧠 Emergent AI Factions</h4>
+          <p>Faction NPC memory and reputation system — every action is remembered and echoed back across quests.</p>
+        </div>
+        <div class="pillar">
+          <h4>🏙️ Living City Sim</h4>
+          <p>NEONRIFT's districts evolve in real time. Control crime, economy, and atmosphere through mission outcomes.</p>
+        </div>
+        <div class="pillar">
+          <h4>🎭 Social Combat System</h4>
+          <p>Every confrontation has a non-lethal path. Persuasion, deception, and leverage are mechanics — not cutscenes.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: VISUAL STYLE -->
+    <div class="slide" id="s4">
+      <div class="left">
+        <div class="slide-tag">03 — Visual Direction</div>
+        <h2>Neon-Drenched<br>Noir. No<br>Compromises.</h2>
+        <div class="world-desc">NEONRIFT's visual language blends the rain-soaked grit of classic noir film with hyper-saturated neon signage and brutalist megastructure architecture. Think Blade Runner meets Akira — photographed at 3 AM in the rain.</div>
+        <div class="palette-row">
+          <div class="swatch" style="background:#00F5D4;" data-name="NEON"></div>
+          <div class="swatch" style="background:#FF3CAC;" data-name="SIGNAL"></div>
+          <div class="swatch" style="background:#FFD166;" data-name="AMBER"></div>
+          <div class="swatch" style="background:#111827;" data-name="VOID"></div>
+          <div class="swatch" style="background:#1e293b;" data-name="STEEL"></div>
+          <div class="swatch" style="background:#a78bfa;" data-name="GLITCH"></div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="visual-card">
+          <div class="icon">🌆</div>
+          <div>
+            <h4>Procedural Weather System</h4>
+            <p>Dynamic rain, fog, and neon reflection rendering via UE5 Lumen. Weather shifts faction patrol patterns and player visibility.</p>
+          </div>
+        </div>
+        <div class="visual-card">
+          <div class="icon">🎭</div>
+          <div>
+            <h4>MetaHuman Character Fidelity</h4>
+            <p>All major characters built in Unreal MetaHuman Creator. Micro-expression system drives trust and suspicion animations in real-time.</p>
+          </div>
+        </div>
+        <div class="visual-card">
+          <div class="icon">🏗️</div>
+          <div>
+            <h4>4 Distinct Districts</h4>
+            <p>Neon Bazaar, The Underplex, Corporate Citadel, and the Shallows — each with unique visual grammar and faction control.</p>
+          </div>
+        </div>
+        <div class="visual-card">
+          <div class="icon">🎮</div>
+          <div>
+            <h4>Minimalist, Diegetic UI</h4>
+            <p>Heads-up information lives in the world — projected on walls, wrist implants, and AR contact lenses. Zero HUD clutter.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S5: MARKET -->
+    <div class="slide" id="s5">
+      <div class="bg-noise"></div>
+      <div class="slide-tag">04 — Market Opportunity</div>
+      <h2>The Market Is Starving<br>for What NEONRIFT Delivers</h2>
+      <div class="market-dash">
+        <div class="mcard c-neon">
+          <div class="big">$227B</div>
+          <div class="mlabel">GLOBAL GAMING MARKET (2024)</div>
+          <div class="mdesc">Console + PC RPG segment alone tops $18B and is growing at 9.2% CAGR through 2028.</div>
+        </div>
+        <div class="mcard c-hot">
+          <div class="big">41M</div>
+          <div class="mlabel">CYBERPUNK 2077 UNITS SOLD</div>
+          <div class="mdesc">Proves market appetite for ambitious cyberpunk RPGs — even a troubled launch still became a top-10 seller of the decade.</div>
+        </div>
+        <div class="mcard c-gold">
+          <div class="big">87%</div>
+          <div class="mlabel">AUDIENCE WANT "MEANINGFUL CHOICE"</div>
+          <div class="mdesc">Of RPG players in 2024 surveys rate "choices that visibly affect the world" as a top purchase driver.</div>
+        </div>
+      </div>
+      <div class="platform-row">
+        <div class="platform-pill">
+          <div class="icon">🖥️</div>
+          <div>
+            <h4>PC (Steam / Epic)</h4>
+            <p>Primary launch platform. Largest RPG install base. Day-one modding tools included.</p>
+          </div>
+        </div>
+        <div class="platform-pill">
+          <div class="icon">🎮</div>
+          <div>
+            <h4>PlayStation 5</h4>
+            <p>Console primary. DualSense haptic integration for weapon recoil and rain effects.</p>
+          </div>
+        </div>
+        <div class="platform-pill">
+          <div class="icon">🟢</div>
+          <div>
+            <h4>Xbox Series X</h4>
+            <p>Day-one Game Pass inclusion for maximum player reach and subscriber value.</p>
+          </div>
+        </div>
+        <div class="platform-pill">
+          <div class="icon">☁️</div>
+          <div>
+            <h4>Cloud Streaming</h4>
+            <p>GeForce NOW and Xbox Cloud Gaming support at launch to capture mobile/casual cross-over audience.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6: MONETIZATION -->
+    <div class="slide" id="s6">
+      <div class="left">
+        <div class="slide-tag">05 — Revenue Model</div>
+        <h2>Premium First.<br>Live Service<br>Second.</h2>
+        <div class="rev-total">$840M</div>
+        <div class="rev-label">5-YEAR REVENUE PROJECTION</div>
+        <div class="rev-note">No pay-to-win. No gameplay gating. Monetization is 100% cosmetic post-launch — designed to maintain player trust while sustaining long-term studio growth.</div>
+      </div>
+      <div class="right">
+        <div class="mono-row a">
+          <div>
+            <div class="m-title">Premium Launch ($59.99)</div>
+            <div class="m-desc">Base game across all platforms. Largest single revenue event.</div>
+            <div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--neon);"></div></div>
+          </div>
+          <div class="m-val">~$480M</div>
+        </div>
+        <div class="mono-row b">
+          <div>
+            <div class="m-title">Story DLC Expansions</div>
+            <div class="m-desc">Two planned expansions (Years 1 & 2) — $24.99 each.</div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--hot);"></div></div>
+          </div>
+          <div class="m-val">~$180M</div>
+        </div>
+        <div class="mono-row c">
+          <div>
+            <div class="m-title">Cosmetic Battle Pass</div>
+            <div class="m-desc">Seasonal cosmetic content — outfits, vehicle skins, apartment decor.</div>
+            <div class="bar-track"><div class="bar-fill" style="width:40%;background:var(--gold);"></div></div>
+          </div>
+          <div class="m-val">~$120M</div>
+        </div>
+        <div class="mono-row d">
+          <div>
+            <div class="m-title">Licensing & IP</div>
+            <div class="m-desc">Manga adaptation, merchandise, anime collab deals in Year 3.</div>
+            <div class="bar-track"><div class="bar-fill" style="width:20%;background:#a78bfa;"></div></div>
+          </div>
+          <div class="m-val">~$60M</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7: TIMELINE -->
+    <div class="slide" id="s7">
+      <div class="slide-tag">06 — Production Timeline</div>
+      <h2>From Prototype to Launch</h2>
+      <div class="timeline">
+        <div class="tl-row">
+          <div class="tl-phase">Q1–Q2 '24</div>
+          <div class="tl-dot done"></div>
+          <div class="tl-content">
+            <h4>Pre-Production & Prototype <span class="hl">✓ Complete</span></h4>
+            <p>Core loop prototype, vertical slice, world design bible, character concepting, GDD finalized.</p>
+          </div>
+          <div class="tl-duration">6 MOS</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-phase">Q3 '24–Q2 '25</div>
+          <div class="tl-dot done"></div>
+          <div class="tl-content">
+            <h4>Alpha Production <span class="hl">✓ Complete</span></h4>
+            <p>District 1 fully playable. Faction AI system implemented. First 10 story hours complete.</p>
+          </div>
+          <div class="tl-duration">12 MOS</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-phase">Q3 '25–Q1 '26</div>
+          <div class="tl-dot now"></div>
+          <div class="tl-content">
+            <h4>Beta Production <span class="hl-hot">● IN PROGRESS</span></h4>
+            <p>Districts 2–4 in production. Full narrative complete. QA integration begins. Closed beta Q4 2025.</p>
+          </div>
+          <div class="tl-duration">9 MOS</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-phase">Q2–Q3 '26</div>
+          <div class="tl-dot next"></div>
+          <div class="tl-content">
+            <h4>Gold & Certification</h4>
+            <p>Platform certification, localization (12 languages), performance optimization, final QA pass.</p>
+          </div>
+          <div class="tl-duration">6 MOS</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-phase">Q3 '26</div>
+          <div class="tl-dot next"></div>
+          <div class="tl-content">
+            <h4>Global Launch</h4>
+            <p>Simultaneous worldwide release across all platforms. Launch window DLC content ready Day 30.</p>
+          </div>
+          <div class="tl-duration">LAUNCH</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S8: TEAM -->
+    <div class="slide" id="s8">
+      <div class="slide-tag">07 — The Team</div>
+      <h2>Built by Players,<br>Shipped by Veterans</h2>
+      <div class="team-grid">
+        <div class="tcard">
+          <div class="tcard-avatar">👾</div>
+          <h4>[Your Name]</h4>
+          <div class="trole">CREATIVE DIRECTOR</div>
+          <p>Former lead designer at [AAA Studio]. Shipped 3 titles with combined 20M+ units sold. 12 years in RPG development.</p>
+        </div>
+        <div class="tcard">
+          <div class="tcard-avatar">⚙️</div>
+          <h4>[Name]</h4>
+          <div class="trole">TECHNICAL DIRECTOR</div>
+          <p>UE5 specialist. Led engine architecture for two open-world titles. Expert in Lumen + Nanite optimization pipelines.</p>
+        </div>
+        <div class="tcard">
+          <div class="tcard-avatar">✍️</div>
+          <h4>[Name]</h4>
+          <div class="trole">NARRATIVE DIRECTOR</div>
+          <p>BAFTA-nominated writer. Previous work includes critically acclaimed RPG and graphic novel adaptation credits.</p>
+        </div>
+        <div class="tcard">
+          <div class="tcard-avatar">🎨</div>
+          <h4>[Name]</h4>
+          <div class="trole">ART DIRECTOR</div>
+          <p>15-year concept art veteran specializing in sci-fi noir environments. Visual lead on two top-20 selling RPGs.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- S9: THE ASK -->
+    <div class="slide" id="s9">
+      <div class="bg-grid2"></div>
+      <div class="glow-ring"></div>
+      <div class="slide-tag" style="justify-content:center;">08 — The Ask</div>
+      <h2>Fund the Future<br>of <span class="glitch">Cyberpunk RPG.</span></h2>
+      <div class="ask-desc">We've proven the concept. We've built the engine. We've assembled the team. NEONRIFT is one production cycle away from redefining what open-world RPGs can be — and we're looking for the right partner to make it happen.</div>
+      <div class="ask-stats">
+        <div class="astat">
+          <div class="val">$14M</div>
+          <div class="lbl">Funding Ask</div>
+        </div>
+        <div class="astat-div"></div>
+        <div class="astat">
+          <div class="val">42mo</div>
+          <div class="lbl">To Launch</div>
+        </div>
+        <div class="astat-div"></div>
+        <div class="astat">
+          <div class="val">60×</div>
+          <div class="lbl">Projected ROI</div>
+        </div>
+        <div class="astat-div"></div>
+        <div class="astat">
+          <div class="val">28</div>
+          <div class="lbl">Team Members</div>
+        </div>
+      </div>
+      <button class="cta-btn" onclick="alert('Replace with contact / demo link!')">▶ REQUEST FULL DEMO BUILD</button>
+    </div>
+
+  </div><!-- /slide-viewport -->
+</div><!-- /deck-wrapper -->
+
+<div class="thumbnails" id="thumbs"></div>
+<div class="hint">Use <kbd>←</kbd> <kbd>→</kbd> to navigate · <kbd>1</kbd>–<kbd>9</kbd> to jump</div>
+
+<script>
+const SLIDES = [
+  { id:'s1', label:'Title'    },
+  { id:'s2', label:'Overview' },
+  { id:'s3', label:'Gameplay' },
+  { id:'s4', label:'Visuals'  },
+  { id:'s5', label:'Market'   },
+  { id:'s6', label:'Revenue'  },
+  { id:'s7', label:'Timeline' },
+  { id:'s8', label:'Team'     },
+  { id:'s9', label:'The Ask'  },
+];
+let current = 0;
+
+const thumbsEl = document.getElementById('thumbs');
+SLIDES.forEach((s, i) => {
+  const t = document.createElement('div');
+  t.className = 'thumb' + (i === 0 ? ' active' : '');
+  t.textContent = s.label;
+  t.onclick = () => goTo(i);
+  thumbsEl.appendChild(t);
+});
+
+function goTo(idx) {
+  document.getElementById(SLIDES[current].id).classList.remove('active');
+  thumbsEl.children[current].classList.remove('active');
+  current = Math.max(0, Math.min(idx, SLIDES.length - 1));
+  document.getElementById(SLIDES[current].id).classList.add('active');
+  thumbsEl.children[current].classList.add('active');
+  document.getElementById('counter').textContent =
+    String(current+1).padStart(2,'0') + ' / ' + String(SLIDES.length).padStart(2,'0');
+  document.getElementById('progress').style.width =
+    ((current+1) / SLIDES.length * 100) + '%';
+}
+
+function changeSlide(dir) { goTo(current + dir); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  if (e.key >= '1' && e.key <= '9') goTo(parseInt(e.key) - 1);
+});
+
+document.getElementById('progress').style.width = (1/SLIDES.length*100)+'%';
+</script>
+</body>
+</html>

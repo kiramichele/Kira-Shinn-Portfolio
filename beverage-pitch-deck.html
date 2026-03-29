@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERD — Retail Pitch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F2EFE6;
+    --dark: #0F1A12;
+    --green: #2D5A3D;
+    --bright: #78C15A;
+    --amber: #D4A842;
+    --muted: #6B7A6E;
+    --slide-w: 1000px;
+    --slide-h: 563px;
+  }
+
+  body {
+    background: #0a0a0a;
+    font-family: 'Syne', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px 16px 40px;
+    color: var(--cream);
+  }
+
+  /* ── NAV ── */
+  .nav {
+    width: 100%;
+    max-width: var(--slide-w);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.1rem; letter-spacing: 0.2em; color: var(--bright); }
+  .nav-controls { display: flex; gap: 10px; align-items: center; }
+  .nav-btn {
+    background: none;
+    border: 1px solid #333;
+    color: #aaa;
+    padding: 6px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: var(--bright); color: var(--bright); }
+  .slide-counter {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: #555;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── DECK WRAPPER ── */
+  .deck-wrapper {
+    width: 100%;
+    max-width: var(--slide-w);
+    position: relative;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    height: 2px;
+    background: #1a1a1a;
+    margin-bottom: 12px;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--bright));
+    transition: width 0.4s ease;
+    border-radius: 1px;
+  }
+
+  /* ── SLIDE VIEWPORT ── */
+  .slide-viewport {
+    width: 100%;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+
+  /* ── SLIDES ── */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    overflow: hidden;
+  }
+  .slide.active { display: flex; animation: slideIn 0.45s cubic-bezier(0.4,0,0.2,1); }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── SLIDE 1: COVER ── */
+  #s1 {
+    background: var(--dark);
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 9% 10%;
+    position: relative;
+  }
+  #s1::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 55%;
+    height: 130%;
+    background: radial-gradient(ellipse at center, #2D5A3D55 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #s1 .leaf-grid {
+    position: absolute;
+    top: 0; right: 0;
+    width: 45%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    opacity: 0.06;
+  }
+  #s1 .leaf-cell { border: 1px solid var(--bright); }
+  .cover-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.55rem, 1.1vw, 0.7rem);
+    letter-spacing: 0.3em;
+    color: var(--bright);
+    text-transform: uppercase;
+    margin-bottom: 3%;
+  }
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.92;
+    color: var(--cream);
+    margin-bottom: 3%;
+  }
+  .cover-title em { color: var(--bright); font-style: italic; }
+  .cover-sub {
+    font-size: clamp(0.6rem, 1.3vw, 0.85rem);
+    color: var(--muted);
+    max-width: 50%;
+    line-height: 1.6;
+    margin-bottom: 6%;
+  }
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--green);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+    color: var(--bright);
+    letter-spacing: 0.15em;
+  }
+  .cover-badge::before { content: '●'; font-size: 0.5em; }
+  .cover-year {
+    position: absolute;
+    bottom: 8%;
+    right: 10%;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: #333;
+    letter-spacing: 0.15em;
+  }
+
+  /* ── SLIDE 2: PROBLEM ── */
+  #s2 {
+    background: var(--cream);
+    flex-direction: column;
+    justify-content: center;
+    padding: 7% 9%;
+    position: relative;
+  }
+  #s2 .slide-label {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 3%;
+  }
+  #s2 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3.8vw, 2.6rem);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 4%;
+    line-height: 1.15;
+  }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3%;
+    margin-top: 2%;
+  }
+  .problem-card {
+    background: #fff;
+    border-left: 3px solid var(--green);
+    padding: 5% 6%;
+    border-radius: 2px;
+  }
+  .problem-card .stat {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .problem-card p {
+    font-size: clamp(0.55rem, 1.1vw, 0.72rem);
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  #s2 .corner-deco {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 18%;
+    height: 35%;
+    background: var(--green);
+    opacity: 0.08;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  }
+
+  /* ── SLIDE 3: SOLUTION ── */
+  #s3 {
+    background: var(--green);
+    flex-direction: row;
+    position: relative;
+    overflow: hidden;
+  }
+  #s3 .left {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8% 8% 8% 10%;
+  }
+  #s3 .right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+    padding: 8% 10% 8% 5%;
+  }
+  #s3 .slide-label {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.25em;
+    color: var(--bright);
+    text-transform: uppercase;
+    margin-bottom: 5%;
+  }
+  #s3 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 5%;
+  }
+  #s3 .tagline {
+    font-size: clamp(0.55rem, 1.1vw, 0.72rem);
+    color: rgba(242,239,230,0.65);
+    line-height: 1.65;
+  }
+  .feature-item {
+    display: flex;
+    gap: 4%;
+    align-items: flex-start;
+  }
+  .feature-icon {
+    width: clamp(28px, 5vw, 38px);
+    height: clamp(28px, 5vw, 38px);
+    background: rgba(120,193,90,0.2);
+    border: 1px solid var(--bright);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.75rem, 1.4vw, 1rem);
+    flex-shrink: 0;
+  }
+  .feature-item h4 {
+    font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 3px;
+    letter-spacing: 0.05em;
+  }
+  .feature-item p {
+    font-size: clamp(0.5rem, 0.95vw, 0.64rem);
+    color: rgba(242,239,230,0.6);
+    line-height: 1.5;
+  }
+  #s3 .divider {
+    position: absolute;
+    left: 50%; top: 10%; bottom: 10%;
+    width: 1px;
+    background: rgba(120,193,90,0.2);
+  }
+
+  /* ── SLIDE 4: MARKET ── */
+  #s4 {
+    background: #0d1f14;
+    flex-direction: column;
+    justify-content: center;
+    padding: 7% 10%;
+    position: relative;
+  }
+  #s4 .slide-label {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.25em;
+    color: var(--bright);
+    text-transform: uppercase;
+    margin-bottom: 3%;
+  }
+  #s4 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 5%;
+    line-height: 1.15;
+  }
+  .market-row {
+    display: flex;
+    gap: 3%;
+    align-items: flex-end;
+    margin-bottom: 5%;
+  }
+  .market-bubble {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(45,90,61,0.4);
+    border: 1px solid rgba(120,193,90,0.25);
+  }
+  .market-bubble.tam { width: clamp(90px, 16vw, 140px); height: clamp(90px, 16vw, 140px); }
+  .market-bubble.sam { width: clamp(70px, 12vw, 105px); height: clamp(70px, 12vw, 105px); background: rgba(45,90,61,0.6); }
+  .market-bubble.som { width: clamp(52px, 9vw, 78px); height: clamp(52px, 9vw, 78px); background: rgba(120,193,90,0.3); }
+  .market-bubble .val {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--cream);
+    font-size: clamp(0.85rem, 1.8vw, 1.2rem);
+    line-height: 1;
+  }
+  .market-bubble .lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.4rem, 0.7vw, 0.5rem);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+  .market-insight {
+    background: rgba(120,193,90,0.08);
+    border: 1px solid rgba(120,193,90,0.2);
+    border-radius: 3px;
+    padding: 3% 4%;
+    font-size: clamp(0.55rem, 1.05vw, 0.7rem);
+    color: rgba(242,239,230,0.75);
+    line-height: 1.6;
+  }
+  .market-insight strong { color: var(--bright); }
+  #s4 .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(120,193,90,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(120,193,90,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* ── SLIDE 5: BUSINESS MODEL ── */
+  #s5 {
+    background: var(--cream);
+    flex-direction: column;
+    justify-content: center;
+    padding: 7% 9%;
+  }
+  #s5 .slide-label {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 3%;
+  }
+  #s5 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 4%;
+  }
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5%;
+  }
+  .model-card {
+    background: var(--dark);
+    border-radius: 3px;
+    padding: 6% 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .model-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--bright);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .model-card:hover::after { transform: scaleX(1); }
+  .model-card .icon { font-size: clamp(1rem, 2.2vw, 1.5rem); margin-bottom: 4px; }
+  .model-card h4 {
+    font-size: clamp(0.6rem, 1.15vw, 0.76rem);
+    font-weight: 700;
+    color: var(--bright);
+    letter-spacing: 0.05em;
+  }
+  .model-card p {
+    font-size: clamp(0.5rem, 0.9vw, 0.62rem);
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .model-card .price {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.6rem, 1.1vw, 0.75rem);
+    color: var(--amber);
+    margin-top: 4px;
+  }
+
+  /* ── SLIDE 6: TRACTION ── */
+  #s6 {
+    background: var(--dark);
+    flex-direction: row;
+    position: relative;
+    overflow: hidden;
+  }
+  #s6 .left {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8% 6% 8% 10%;
+  }
+  #s6 .right {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6% 8% 6% 4%;
+    gap: 4%;
+  }
+  #s6 .slide-label {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.25em;
+    color: var(--bright);
+    text-transform: uppercase;
+    margin-bottom: 5%;
+  }
+  #s6 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+    color: var(--cream);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 5%;
+  }
+  .metric-row {
+    display: flex;
+    gap: 6%;
+  }
+  .metric {
+    display: flex;
+    flex-direction: column;
+  }
+  .metric .val {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.6rem);
+    font-weight: 900;
+    color: var(--bright);
+    line-height: 1;
+  }
+  .metric .lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.45rem, 0.8vw, 0.56rem);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+  }
+  .traction-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 3%;
+    padding: 3% 4%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 3px;
+  }
+  .traction-dot {
+    width: clamp(6px, 1.2vw, 9px);
+    height: clamp(6px, 1.2vw, 9px);
+    background: var(--bright);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .traction-item p {
+    font-size: clamp(0.5rem, 0.95vw, 0.65rem);
+    color: rgba(242,239,230,0.75);
+    line-height: 1.55;
+  }
+  .traction-item p strong { color: var(--cream); }
+
+  /* ── SLIDE 7: THE ASK ── */
+  #s7 {
+    background: var(--green);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8% 12%;
+    position: relative;
+    overflow: hidden;
+  }
+  #s7::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 120%, rgba(120,193,90,0.25) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  #s7 .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(120,193,90,0.15);
+    pointer-events: none;
+  }
+  #s7 .r1 { width: 60%; padding-top: 60%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  #s7 .r2 { width: 90%; padding-top: 90%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  #s7 .slide-label {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.25em;
+    color: var(--bright);
+    text-transform: uppercase;
+    margin-bottom: 4%;
+    position: relative;
+  }
+  #s7 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5.5vw, 4rem);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.05;
+    margin-bottom: 4%;
+    position: relative;
+  }
+  #s7 h2 em { color: var(--bright); font-style: italic; }
+  #s7 .ask-sub {
+    font-size: clamp(0.55rem, 1.1vw, 0.72rem);
+    color: rgba(242,239,230,0.65);
+    line-height: 1.65;
+    max-width: 65%;
+    margin-bottom: 6%;
+    position: relative;
+  }
+  .ask-grid {
+    display: flex;
+    gap: 5%;
+    position: relative;
+  }
+  .ask-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .ask-item .num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1;
+  }
+  .ask-item .desc {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.45rem, 0.85vw, 0.58rem);
+    color: var(--bright);
+    letter-spacing: 0.12em;
+    text-align: center;
+  }
+  .ask-divider { width: 1px; background: rgba(120,193,90,0.3); align-self: stretch; }
+
+  /* ── SLIDE 8: TEAM ── */
+  #s8 {
+    background: var(--cream);
+    flex-direction: column;
+    justify-content: center;
+    padding: 7% 9%;
+  }
+  #s8 .slide-label {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 3%;
+  }
+  #s8 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 5%;
+  }
+  .team-row {
+    display: flex;
+    gap: 3%;
+  }
+  .team-card {
+    flex: 1;
+    background: var(--dark);
+    border-radius: 3px;
+    padding: 5% 5%;
+    position: relative;
+  }
+  .team-avatar {
+    width: clamp(32px, 6vw, 48px);
+    height: clamp(32px, 6vw, 48px);
+    border-radius: 50%;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.8rem, 1.6vw, 1.1rem);
+    margin-bottom: 5%;
+  }
+  .team-card h4 {
+    font-size: clamp(0.65rem, 1.3vw, 0.85rem);
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 2px;
+  }
+  .team-card .role {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.45rem, 0.8vw, 0.56rem);
+    color: var(--bright);
+    letter-spacing: 0.1em;
+    margin-bottom: 5%;
+  }
+  .team-card p {
+    font-size: clamp(0.5rem, 0.9vw, 0.62rem);
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* ── SLIDE THUMBNAILS ── */
+  .thumbnails {
+    display: flex;
+    gap: 6px;
+    margin-top: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .thumb {
+    width: 60px;
+    height: 34px;
+    border: 1px solid #222;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    color: #444;
+    letter-spacing: 0.05em;
+  }
+  .thumb:hover { border-color: #555; color: #888; }
+  .thumb.active { border-color: var(--bright); color: var(--bright); background: rgba(120,193,90,0.08); }
+
+  /* ── KEYBOARD HINT ── */
+  .hint {
+    margin-top: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: #333;
+    letter-spacing: 0.1em;
+  }
+  kbd {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 2px;
+    padding: 1px 5px;
+    color: #555;
+    font-size: 0.6rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<div class="nav">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <a href="https://kirashinnportfolio.com/slide-decks" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#6B7A6E;letter-spacing:0.15em;text-decoration:none;border:1px solid #6B7A6E;padding:4px 12px;border-radius:2px;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#78C15A';this.style.borderColor='#78C15A';" onmouseout="this.style.color='#6B7A6E';this.style.borderColor='#6B7A6E';">← ALL DECKS</a>
+    <div class="nav-brand">VERD</div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">← PREV</button>
+    <span class="slide-counter" id="counter">01 / 08</span>
+    <button class="nav-btn" onclick="changeSlide(1)">NEXT →</button>
+  </div>
+</div>
+
+<!-- ── PROGRESS ── -->
+<div class="deck-wrapper">
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+  <!-- ── SLIDE VIEWPORT ── -->
+  <div class="slide-viewport">
+
+    <!-- S1: COVER -->
+    <div class="slide active" id="s1">
+      <div class="leaf-grid" id="leafGrid"></div>
+      <div class="cover-eyebrow">Retail Partnership Proposal · 2025</div>
+      <div class="cover-title">The Future<br>of <em>Better</em><br>Beverages.</div>
+      <div class="cover-sub">VERD is a functional beverage brand redefining what healthy hydration looks and tastes like—crafted for the shelf space of tomorrow.</div>
+      <div class="cover-badge">Confidential — For Retail Review Only</div>
+      <div class="cover-year">VERD BEVERAGE CO. · EST. 2023</div>
+    </div>
+
+    <!-- S2: PROBLEM -->
+    <div class="slide" id="s2">
+      <div class="corner-deco"></div>
+      <div class="slide-label">01 — The Problem</div>
+      <h2>Consumers Want Better.<br>The Shelf Isn't Delivering.</h2>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="stat">74%</div>
+          <p>of shoppers say they actively seek functional or better-for-you beverages but struggle to find them in-store.</p>
+        </div>
+        <div class="problem-card">
+          <div class="stat">$6.2B</div>
+          <p>left on the table annually as health-conscious consumers turn to e-commerce rather than retail for functional drinks.</p>
+        </div>
+        <div class="problem-card">
+          <div class="stat">3×</div>
+          <p>faster YoY growth in functional beverages versus the overall non-alcoholic beverage category nationally.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3: SOLUTION -->
+    <div class="slide" id="s3">
+      <div class="divider"></div>
+      <div class="left">
+        <div class="slide-label">02 — Our Solution</div>
+        <h2>Clean Ingredients.<br>Bold Flavor.<br>Real Function.</h2>
+        <div class="tagline">VERD makes functional beverages people actually want to drink—no artificial sweeteners, no greenwashing. Just honest ingredients that work.</div>
+      </div>
+      <div class="right">
+        <div class="feature-item">
+          <div class="feature-icon">🌿</div>
+          <div>
+            <h4>Adaptogens + Electrolytes</h4>
+            <p>Every SKU features a clinically-backed blend of adaptogens and electrolytes for sustained energy and hydration.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🎨</div>
+          <div>
+            <h4>Shelf-Ready Branding</h4>
+            <p>High-contrast design with clear functional callouts built specifically for retail visibility and impulse purchase.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">♻️</div>
+          <div>
+            <h4>Sustainable Packaging</h4>
+            <p>100% recyclable aluminum cans with BPA-free lining. Carbon-neutral shipping on all fulfillment orders.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📦</div>
+          <div>
+            <h4>6 Launch SKUs Ready</h4>
+            <p>Watermelon Mint, Citrus Ginger, Tropical Calm, Berry Focus, Mango Restore, and Green Clean.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: MARKET -->
+    <div class="slide" id="s4">
+      <div class="grid-bg"></div>
+      <div class="slide-label">03 — Market Opportunity</div>
+      <h2>A $38B Category<br>in Active Disruption</h2>
+      <div class="market-row">
+        <div class="market-bubble tam">
+          <div class="val">$38B</div>
+          <div class="lbl">TAM</div>
+        </div>
+        <div class="market-bubble sam">
+          <div class="val">$9B</div>
+          <div class="lbl">SAM</div>
+        </div>
+        <div class="market-bubble som">
+          <div class="val">$180M</div>
+          <div class="lbl">SOM</div>
+        </div>
+        <div style="flex:1; padding-left: 4%; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
+          <div style="font-size: clamp(0.5rem, 0.9vw, 0.62rem); color: var(--muted); line-height: 1.5;">
+            <strong style="color: var(--cream); display: block; font-size: clamp(0.6rem, 1.1vw, 0.72rem);">TAM — $38B</strong>
+            Total U.S. non-alcoholic functional beverage market (2024)
+          </div>
+          <div style="font-size: clamp(0.5rem, 0.9vw, 0.62rem); color: var(--muted); line-height: 1.5;">
+            <strong style="color: var(--cream); display: block; font-size: clamp(0.6rem, 1.1vw, 0.72rem);">SAM — $9B</strong>
+            Health-forward retail-distributed RTD segment
+          </div>
+          <div style="font-size: clamp(0.5rem, 0.9vw, 0.62rem); color: var(--muted); line-height: 1.5;">
+            <strong style="color: var(--cream); display: block; font-size: clamp(0.6rem, 1.1vw, 0.72rem);">SOM — $180M</strong>
+            Realistic 3-year capture in our distribution channels
+          </div>
+        </div>
+      </div>
+      <div class="market-insight">
+        The functional beverage segment is growing at <strong>12.4% CAGR</strong> through 2029. Our core demographic—health-conscious adults 24–42—spends an average of <strong>$68/month</strong> on premium beverages, with retail remaining their top purchase channel.
+      </div>
+    </div>
+
+    <!-- S5: BUSINESS MODEL -->
+    <div class="slide" id="s5">
+      <div class="slide-label">04 — Business Model</div>
+      <h2>Multiple Revenue Streams,<br>One Unified Brand</h2>
+      <div class="model-grid">
+        <div class="model-card">
+          <div class="icon">🏪</div>
+          <h4>Retail</h4>
+          <p>In-store placement with co-op marketing, end-cap promotions, and weekly restock cadence.</p>
+          <div class="price">$3.49 / unit MSRP</div>
+        </div>
+        <div class="model-card">
+          <div class="icon">📦</div>
+          <h4>Subscription</h4>
+          <p>Direct-to-consumer monthly variety boxes with exclusive SKUs not available in retail.</p>
+          <div class="price">$39 / month</div>
+        </div>
+        <div class="model-card">
+          <div class="icon">🏋️</div>
+          <h4>Hospitality B2B</h4>
+          <p>Gyms, spas, and wellness studios. Private-label and co-branded options available.</p>
+          <div class="price">$1.80 / unit wholesale</div>
+        </div>
+        <div class="model-card">
+          <div class="icon">🌐</div>
+          <h4>E-Commerce</h4>
+          <p>Brand site + Amazon storefront. Full DTC margin with 4.8★ average review across 1,200+ orders.</p>
+          <div class="price">$4.49 / unit online</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6: TRACTION -->
+    <div class="slide" id="s6">
+      <div class="left">
+        <div class="slide-label">05 — Traction</div>
+        <h2>Early Signals Are Strong</h2>
+        <div class="metric-row">
+          <div class="metric">
+            <div class="val">42K</div>
+            <div class="lbl">Units sold (12mo)</div>
+          </div>
+          <div class="metric">
+            <div class="val">$140K</div>
+            <div class="lbl">Revenue to date</div>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="traction-item">
+          <div class="traction-dot"></div>
+          <p><strong>Regional launch in 38 locations</strong> across 4 Southeast states. Average sellthrough rate of 91% per restock cycle.</p>
+        </div>
+        <div class="traction-item">
+          <div class="traction-dot"></div>
+          <p><strong>4.8-star average rating</strong> across 1,200+ DTC orders with a 38% repeat purchase rate in first 90 days.</p>
+        </div>
+        <div class="traction-item">
+          <div class="traction-dot"></div>
+          <p><strong>Co-packer capacity confirmed</strong> for 500K units/month. Inventory and logistics infrastructure in place for scaled retail.</p>
+        </div>
+        <div class="traction-item">
+          <div class="traction-dot"></div>
+          <p><strong>Featured in Whole Living Magazine</strong> (April 2025) and named a "Brand to Watch" by BevNet's editorial team.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7: THE ASK -->
+    <div class="slide" id="s7">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="slide-label">06 — The Opportunity</div>
+      <h2>Let's Put VERD<br>on Your <em>Shelves</em>.</h2>
+      <div class="ask-sub">We're seeking a flagship retail partnership to expand VERD nationally. Here's what we're bringing to the table:</div>
+      <div class="ask-grid">
+        <div class="ask-item">
+          <div class="num">6 SKUs</div>
+          <div class="desc">Launch-ready<br>products</div>
+        </div>
+        <div class="ask-divider"></div>
+        <div class="ask-item">
+          <div class="num">$50K</div>
+          <div class="desc">Co-op marketing<br>commitment</div>
+        </div>
+        <div class="ask-divider"></div>
+        <div class="ask-item">
+          <div class="num">500K</div>
+          <div class="desc">Units/month<br>capacity</div>
+        </div>
+        <div class="ask-divider"></div>
+        <div class="ask-item">
+          <div class="num">30-Day</div>
+          <div class="desc">Pilot program<br>available</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S8: TEAM -->
+    <div class="slide" id="s8">
+      <div class="slide-label">07 — The Team</div>
+      <h2>Built by Operators,<br>Not Just Dreamers</h2>
+      <div class="team-row">
+        <div class="team-card">
+          <div class="team-avatar">👩‍💼</div>
+          <h4>[Your Name]</h4>
+          <div class="role">CEO & CO-FOUNDER</div>
+          <p>Former brand manager at [Major CPG Co.] with 10 years in beverage product development and retail distribution strategy.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">👨‍🔬</div>
+          <h4>[Co-Founder Name]</h4>
+          <div class="role">COO & HEAD OF PRODUCT</div>
+          <p>Formulation scientist with an MS in Nutrition and 8 years developing functional ingredients for the sports nutrition industry.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">👩‍💻</div>
+          <h4>[Advisor Name]</h4>
+          <div class="role">RETAIL ADVISOR</div>
+          <p>30-year veteran of national retail grocery buying. Former Category Director at [Major Retailer]. Advisor and investor.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">👨‍🎨</div>
+          <h4>[Name]</h4>
+          <div class="role">BRAND & CREATIVE LEAD</div>
+          <p>Award-winning CPG brand designer behind 3 nationally-distributed beverage brands with combined $200M in annual retail sales.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slide-viewport -->
+</div><!-- /deck-wrapper -->
+
+<!-- ── THUMBNAILS ── -->
+<div class="thumbnails" id="thumbs"></div>
+<div class="hint">Use <kbd>←</kbd> <kbd>→</kbd> arrow keys to navigate</div>
+
+<script>
+  const SLIDES = [
+    { id: 's1', label: 'Cover' },
+    { id: 's2', label: 'Problem' },
+    { id: 's3', label: 'Solution' },
+    { id: 's4', label: 'Market' },
+    { id: 's5', label: 'Model' },
+    { id: 's6', label: 'Traction' },
+    { id: 's7', label: 'The Ask' },
+    { id: 's8', label: 'Team' },
+  ];
+
+  let current = 0;
+
+  // Build leaf grid
+  const grid = document.getElementById('leafGrid');
+  if (grid) {
+    for (let i = 0; i < 20; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'leaf-cell';
+      grid.appendChild(cell);
+    }
+  }
+
+  // Build thumbnails
+  const thumbsEl = document.getElementById('thumbs');
+  SLIDES.forEach((s, i) => {
+    const t = document.createElement('div');
+    t.className = 'thumb' + (i === 0 ? ' active' : '');
+    t.textContent = s.label;
+    t.onclick = () => goTo(i);
+    thumbsEl.appendChild(t);
+  });
+
+  function goTo(idx) {
+    document.getElementById(SLIDES[current].id).classList.remove('active');
+    thumbsEl.children[current].classList.remove('active');
+    current = Math.max(0, Math.min(idx, SLIDES.length - 1));
+    document.getElementById(SLIDES[current].id).classList.add('active');
+    thumbsEl.children[current].classList.add('active');
+    document.getElementById('counter').textContent =
+      String(current + 1).padStart(2, '0') + ' / ' + String(SLIDES.length).padStart(2, '0');
+    document.getElementById('progress').style.width =
+      ((current + 1) / SLIDES.length * 100) + '%';
+  }
+
+  function changeSlide(dir) { goTo(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  });
+
+  // Init progress
+  document.getElementById('progress').style.width = (1 / SLIDES.length * 100) + '%';
+</script>
+</body>
+</html>
