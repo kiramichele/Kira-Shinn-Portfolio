@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide Decks — Kira Shinn Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:   #f9f8f6;
+    --white:#ffffff;
+    --ink:  #1c1c1e;
+    --mid:  #4a4a52;
+    --muted:#8e8e99;
+    --rule: #e4e2dd;
+    --verd: #2D5A3D;
+    --verd-bright: #78C15A;
+    --neon: #00F5D4;
+    --hot:  #FF3CAC;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── SITE HEADER ── */
+  .site-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 0 clamp(24px, 5vw, 64px);
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .site-logo {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+  }
+  .site-logo em { font-style: italic; font-weight: 400; color: var(--mid); }
+  .back-link {
+    font-size: 11.5px;
+    font-weight: 300;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .back-link:hover { color: var(--ink); }
+
+  /* ── PAGE INTRO ── */
+  .page-intro {
+    padding: clamp(40px, 6vw, 64px) clamp(24px, 5vw, 64px) 0;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .intro-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .intro-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .intro-title em { font-style: italic; font-weight: 400; color: var(--mid); }
+  .intro-desc {
+    font-size: 13.5px;
+    font-weight: 300;
+    color: var(--mid);
+    line-height: 1.7;
+    max-width: 560px;
+    padding-bottom: clamp(32px, 5vw, 48px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── DECK AREA ── */
+  .deck-area {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 5vw, 64px) 80px;
+  }
+
+  /* ── SWITCHER TABS ── */
+  .switcher {
+    display: flex;
+    gap: 0;
+    margin: clamp(24px, 4vw, 40px) 0 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .switch-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 14px 24px 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.18s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .switch-btn:hover .switch-name { color: var(--ink); }
+  .switch-btn.active-verd { border-bottom-color: var(--verd); }
+  .switch-btn.active-neon { border-bottom-color: var(--neon); }
+
+  .switch-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .swatch-verd { background: var(--verd-bright); }
+  .swatch-neon { background: var(--neon); box-shadow: 0 0 6px rgba(0,245,212,0.5); }
+
+  .switch-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mid);
+    transition: color 0.15s;
+    white-space: nowrap;
+  }
+  .switch-btn.active-verd .switch-name,
+  .switch-btn.active-neon .switch-name { color: var(--ink); }
+
+  .switch-tag {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    display: none;
+  }
+  @media (min-width: 600px) { .switch-tag { display: inline; } }
+
+  .switch-count {
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 1px 7px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── DECK PANELS ── */
+  .deck-panel { display: none; }
+  .deck-panel.active { display: block; }
+
+  /* Meta bar above iframe */
+  .deck-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .deck-meta-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .deck-meta-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+  }
+  .deck-meta-desc {
+    font-size: 11.5px;
+    font-weight: 300;
+    color: var(--muted);
+  }
+  .deck-meta-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 2px 9px;
+    letter-spacing: 0.04em;
+    background: var(--white);
+  }
+
+  /* iFrame — 16:9 responsive */
+  .iframe-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    background: #111;
+  }
+  .iframe-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* Hint bar below iframe */
+  .deck-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 0;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hint-text {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--muted);
+  }
+  kbd {
+    display: inline-block;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0 5px 1px;
+    font-size: 10px;
+    color: var(--mid);
+    box-shadow: 0 1px 0 var(--rule);
+  }
+  .hint-note {
+    font-size: 10.5px;
+    font-weight: 300;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── ABOUT STRIP ── */
+  .about-strip {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 5vw, 64px) 64px;
+  }
+  .about-inner {
+    background: var(--ink);
+    border-radius: 12px;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .about-text {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.65;
+    max-width: 540px;
+  }
+  .about-text strong { color: rgba(255,255,255,0.85); font-weight: 400; }
+  .about-links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .about-link {
+    font-size: 11.5px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    transition: color 0.15s;
+    white-space: nowrap;
+  }
+  .about-link:hover { color: rgba(255,255,255,0.8); }
+  .about-link.primary { font-weight: 500; color: #f0a500; }
+</style>
+</head>
+<body>
+
+<!-- ── SITE HEADER ── -->
+<header class="site-header">
+  <a class="site-logo" href="https://design.kirashinn.dev">Kira Shinn <em>Design</em></a>
+  <a class="back-link" href="https://design.kirashinn.dev">← Back to portfolio</a>
+</header>
+
+<!-- ── PAGE INTRO ── -->
+<div class="page-intro">
+  <div class="intro-eyebrow">Design Work · Presentations</div>
+  <h1 class="intro-title">Slide Deck<br><em>Design.</em></h1>
+  <p class="intro-desc">Interactive HTML pitch decks built from scratch — no PowerPoint, no Figma exports. Full keyboard navigation, animated transitions, and presentation-ready layouts in vanilla HTML, CSS, and JavaScript.</p>
+</div>
+
+<!-- ── DECK AREA ── -->
+<div class="deck-area">
+
+  <div class="switcher">
+    <button class="switch-btn active-verd" id="tab-verd" onclick="showDeck('verd')">
+      <span class="switch-swatch swatch-verd"></span>
+      <span class="switch-name">VERD Beverage Pitch</span>
+      <span class="switch-tag">· Retail · Startup</span>
+      <span class="switch-count">8 slides</span>
+    </button>
+    <button class="switch-btn" id="tab-neon" onclick="showDeck('neon')">
+      <span class="switch-swatch swatch-neon"></span>
+      <span class="switch-name">NEONRIFT Game Pitch</span>
+      <span class="switch-tag">· Game Design · RPG</span>
+      <span class="switch-count">9 slides</span>
+    </button>
+  </div>
+
+  <!-- VERD PANEL -->
+  <div class="deck-panel active" id="panel-verd">
+    <div class="deck-meta">
+      <div class="deck-meta-left">
+        <div class="deck-meta-title">VERD Beverage Co. — Retail Partnership Pitch</div>
+        <div class="deck-meta-desc">A retail pitch for a functional beverage startup targeting large grocery chains.</div>
+      </div>
+      <div class="deck-meta-chips">
+        <span class="chip">Pitch Deck</span>
+        <span class="chip">Startup</span>
+        <span class="chip">Brand</span>
+        <span class="chip">HTML / CSS / JS</span>
+      </div>
+    </div>
+    <div class="iframe-wrap">
+      <iframe
+        src="./beverage-pitch-deck.html"
+        title="VERD Beverage Retail Pitch Deck"
+        loading="lazy"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <div class="deck-hint">
+      <span class="hint-text">Click the deck to focus it, then use <kbd>←</kbd> <kbd>→</kbd> to navigate slides.</span>
+      <span class="hint-note">Click any thumbnail at the bottom to jump to a slide.</span>
+    </div>
+  </div>
+
+  <!-- NEONRIFT PANEL -->
+  <div class="deck-panel" id="panel-neon">
+    <div class="deck-meta">
+      <div class="deck-meta-left">
+        <div class="deck-meta-title">NEONRIFT — Open-World RPG Game Design Pitch</div>
+        <div class="deck-meta-desc">A full investor pitch for a cyberpunk noir action RPG built in Unreal Engine 5.</div>
+      </div>
+      <div class="deck-meta-chips">
+        <span class="chip">Pitch Deck</span>
+        <span class="chip">Game Design</span>
+        <span class="chip">UE5</span>
+        <span class="chip">HTML / CSS / JS</span>
+      </div>
+    </div>
+    <div class="iframe-wrap">
+      <iframe
+        src="./game-pitch-deck.html"
+        title="NEONRIFT Game Design Pitch Deck"
+        loading="lazy"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <div class="deck-hint">
+      <span class="hint-text">Click the deck to focus it, then use <kbd>←</kbd> <kbd>→</kbd> or <kbd>1</kbd>–<kbd>9</kbd> to navigate.</span>
+      <span class="hint-note">Click any thumbnail at the bottom to jump to a slide.</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── ABOUT STRIP ── -->
+<div class="about-strip">
+  <div class="about-inner">
+    <div class="about-text">
+      Both decks are <strong>built entirely in HTML, CSS, and JavaScript</strong> — no slide builder software. Each has its own distinct visual language, keyboard navigation, animated transitions, and a thumbnail scrubber. Drop the file on any server and it works.
+    </div>
+    <div class="about-links">
+      <a class="about-link primary" href="https://kirashinnportfolio.netlify.app" target="_blank">Full Portfolio ↗</a>
+      <a class="about-link" href="https://kirashinnonepagers.netlify.app/kira-shinn-services.html" target="_blank">Services & Rates ↗</a>
+      <a class="about-link" href="https://www.upwork.com" target="_blank">Hire on Upwork ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showDeck(which) {
+    document.getElementById('panel-verd').classList.toggle('active', which === 'verd');
+    document.getElementById('panel-neon').classList.toggle('active', which === 'neon');
+    const tv = document.getElementById('tab-verd');
+    const tn = document.getElementById('tab-neon');
+    tv.className = 'switch-btn' + (which === 'verd' ? ' active-verd' : '');
+    tn.className = 'switch-btn' + (which === 'neon' ? ' active-neon' : '');
+  }
+</script>
+</body>
+</html>
